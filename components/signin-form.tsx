@@ -56,52 +56,54 @@ export function SignInForm() {
 
 
   //testing purpose only
-  const handleSignIn = () => {
-    if (lockType !== "none") return
+const handleSignIn = () => {
+  if (lockType !== "none") return
 
-    const newErrors: { email?: string; password?: string } = {}
-    let isFailed = false
+  const newErrors: { email?: string; password?: string } = {}
+  let isFailed = false
 
-    if (email !== "admin_ethereal@gmail.com") {
-      newErrors.email = "Invalid email"
-      isFailed = true
-    }
-
-    if (password !== "Test@123") {
-      newErrors.password = "Incorrect password"
-      isFailed = true
-    }
-
-    setErrors(newErrors)
-
-    // if (isFailed) {
-    //   const attempts = failedAttempts + 1
-    //   setFailedAttempts(attempts)
-
-    //   if (attempts === SOFT_LOCK_AFTER) {
-    //     setLockType("soft")
-    //     setRemainingTime(SOFT_LOCK_TIME)
-    //   }
-
-    //   if (attempts >= HARD_LOCK_AFTER) {
-    //     setLockType("hard")
-    //     setRemainingTime(HARD_LOCK_TIME)
-    //   }
-
-    //   return
-    // }
-
-    // ✅ SUCCESS
-    setFailedAttempts(0)
-    setLockType("none")
-
-    if (rememberMe) {
-      localStorage.setItem("auth", "true")
-      localStorage.setItem("email", email)
-    }
-
-    router.push("/dashboard")
+  if (email !== "admin_ethereal@gmail.com") {
+    newErrors.email = "Invalid email"
+    isFailed = true
   }
+
+  if (password !== "Test@123") {
+    newErrors.password = "Incorrect password"
+    isFailed = true
+  }
+
+  setErrors(newErrors)
+
+  // ⛔ STOP HERE IF FAILED
+  if (isFailed) {
+    const attempts = failedAttempts + 1
+    setFailedAttempts(attempts)
+
+    if (attempts === SOFT_LOCK_AFTER) {
+      setLockType("soft")
+      setRemainingTime(SOFT_LOCK_TIME)
+    }
+
+    if (attempts >= HARD_LOCK_AFTER) {
+      setLockType("hard")
+      setRemainingTime(HARD_LOCK_TIME)
+    }
+
+    return // 🔴 THIS WAS MISSING
+  }
+
+  // ✅ SUCCESS (ONLY when email + password match)
+  setFailedAttempts(0)
+  setLockType("none")
+  setErrors({})
+
+  if (rememberMe) {
+    localStorage.setItem("auth", "true")
+    localStorage.setItem("email", email)
+  }
+
+  router.push("/dashboard")
+}
 
 
   useEffect(() => {
