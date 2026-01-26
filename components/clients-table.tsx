@@ -262,7 +262,7 @@ export function ClientsTable({
             <span className={cn("ml-2 rounded-2xl p-1 px-1.5", activeTab === "riskprofile" ? "bg-[#5FAE2E]/40" : "bg-[#D6D6D6] ")}> {counts.riskprofile}</span>
           </button>
         </div>
-        <div className="bg-white rounded-2xl border border-[#eaecf0] h-[62dvh] flex flex-col">
+        <div className="bg-white rounded-2xl border border-[#eaecf0]  h-[calc(100vh-310px)] flex flex-col">
           <div className="overflow-x-auto">
 
             <table className="w-full">

@@ -214,9 +214,9 @@ export function CallsTable({
         </button>
       </div>
        </div>
-      <div className="bg-white border border-[#eaecf0] h-[62dvh] flex flex-col rounded-b-2xl">
+      <div className="bg-white border border-[#eaecf0] h-[calc(100vh-310px)] flex flex-col rounded-b-2xl">
         <div className="overflow-x-auto">
-  <div className="max-h-[62dvh] ">
+  <div className="max-h-[calc(100vh-310px)] ">
     <table className="w-full">
             <thead>
              <tr className="border-b border-[#eaecf0] sticky top-0 z-10 bg-white">
