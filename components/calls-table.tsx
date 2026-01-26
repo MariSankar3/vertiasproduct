@@ -15,6 +15,7 @@ import { callsData } from "@/lib/mock-data"
 const ROW_HEIGHT = 65 
 const HEADER_HEIGHT = 56 
 
+
 type CallsTableProps = {
   searchQuery?: string
   statusFilters?: string[]
@@ -46,6 +47,15 @@ export function CallsTable({
     window.addEventListener("resize", calculateRows)
     return () => window.removeEventListener("resize", calculateRows)
   }, [])
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+  const timer = setTimeout(() => {
+    setLoading(false)
+  }, 1000) 
+
+  return () => clearTimeout(timer)
+}, [])
+
 
   const clients = callsData
   // const clients = []
@@ -244,8 +254,13 @@ export function CallsTable({
                 <th className="text-left p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">More</th>
               </tr>
             </thead>
-            <tbody>
-              {filteredClients.length === 0 ? (
+           <tbody>
+  {loading ? (
+    Array.from({ length: rowsPerPage }).map((_, i) => (
+      <TableSkeletonRow key={i} />
+    ))
+  ) : filteredClients.length === 0 ? (
+
                 <tr>
                   <td colSpan={12} className="h-[50vh]">
                     <div className="flex flex-col items-center justify-center h-full text-center font-nunito">
@@ -395,5 +410,17 @@ export function CallsTable({
         </div>
       )}
     </motion.div>
+  )
+}
+
+function TableSkeletonRow() {
+  return (
+    <tr className="animate-pulse">
+      {Array.from({ length: 12 }).map((_, i) => (
+        <td key={i} className="p-4 py-6">
+          <div className="h-4 w-full rounded-md bg-gray-200" />
+        </td>
+      ))}
+    </tr>
   )
 }

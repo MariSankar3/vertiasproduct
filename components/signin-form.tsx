@@ -89,7 +89,7 @@ const handleSignIn = () => {
       setRemainingTime(HARD_LOCK_TIME)
     }
 
-    return // 🔴 THIS WAS MISSING
+    return 
   }
 
   // ✅ SUCCESS (ONLY when email + password match)
