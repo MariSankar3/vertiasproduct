@@ -9,7 +9,7 @@ import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
 import { clientsData } from "@/lib/mock-data"
-
+import { useEffect, useMemo } from "react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +18,12 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { ChevronsUp, ChevronsDown, ArrowUpDown, Check } from "lucide-react"
 
+// const clients = [] ?? clientsData 
 const clients = clientsData ?? []
+
+const ROW_HEIGHT = 70 
+const HEADER_HEIGHT = 56 
+
 
 const statusColors: Record<string, string> = {
   Active: "bg-[#ecfdf3] text-[#067647] border-[#abefc6]",
@@ -36,6 +41,7 @@ type ClientsTableProps = {
 }
 
 export function ClientsTable({
+
   searchQuery = "",
   statusFilters = [],
   categoryFilters = [],
@@ -43,6 +49,32 @@ export function ClientsTable({
   const [activeTab, setActiveTab] = useState("all")
   const [sortKey, setSortKey] = useState<SortKey>(null)
   const [sortOrder, setSortOrder] = useState<SortOrder>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [rowsPerPage, setRowsPerPage] = useState(8)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+  // simulate API delay
+  const timer = setTimeout(() => {
+    setLoading(false)
+  }, 500) // 1.2s skeleton
+
+  return () => clearTimeout(timer)
+}, [])
+
+  useEffect(() => {
+    const calculateRows = () => {
+      const containerHeight = window.innerHeight * 0.7
+      const availableHeight = containerHeight - HEADER_HEIGHT
+      const rows = Math.floor(availableHeight / ROW_HEIGHT)
+      setRowsPerPage(Math.max(rows, 1))
+    }
+
+    calculateRows()
+    window.addEventListener("resize", calculateRows)
+    return () => window.removeEventListener("resize", calculateRows)
+  }, [])
+
   const filteredClients = clients.filter((client) => {
     // Advanced Filter (from header filter modal)
     if (statusFilters.length > 0 && !statusFilters.includes(client.status)) {
@@ -81,6 +113,17 @@ export function ClientsTable({
   const allSelected =
     sortedClients.length > 0 &&
     sortedClients.every((c) => selectedIds.includes(c.id))
+  const totalPages = Math.ceil(sortedClients.length / rowsPerPage)
+
+  const paginatedClients = useMemo(() => {
+    const start = (currentPage - 1) * rowsPerPage
+    return sortedClients.slice(start, start + rowsPerPage)
+  }, [sortedClients, currentPage, rowsPerPage])
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [activeTab, searchQuery, statusFilters, categoryFilters, sortKey, sortOrder])
+
 
 
   // Calculate counts based on filtered data (excluding activeTab filter)
@@ -132,16 +175,16 @@ export function ClientsTable({
             className="mb-6"
           />
 
-          <h2 className="text-[22px] font-semibold text-[#101828]">
+          <h2 className="text-[24px] font-semibold text-[#101828]">
             No Client Yet
           </h2>
 
-          <p className="mt-2 text-[15px] text-[#667085] max-w-md">
+          <p className="mt-2 text-[16px] text-[#888888] max-w-md">
             Start by adding your first client to begin building your
             compliance-first practice.
           </p>
           <Link href="/newclients">
-            <Button className="cursor-pointer mt-6 bg-[#A7E55C] text-[#121212] rounded-full px-6 hover:bg-[#A7E55C] hover:scale-[1.1]">
+            <Button className="text-[16px] font-bold cursor-pointer mt-6 bg-[#A7E55C] text-[#121212] rounded-full px-6 hover:bg-[#A7E55C] hover:scale-[1.05]">
               + Add your first client
             </Button>
           </Link>
@@ -157,7 +200,7 @@ export function ClientsTable({
       initial={{ opacity: 0, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="space-y-6"
+      className="space-y-1"
     >
 
 
@@ -219,12 +262,12 @@ export function ClientsTable({
             <span className={cn("ml-2 rounded-2xl p-1 px-1.5", activeTab === "riskprofile" ? "bg-[#5FAE2E]/40" : "bg-[#D6D6D6] ")}> {counts.riskprofile}</span>
           </button>
         </div>
-        <div className="bg-white rounded-2xl border border-[#eaecf0] overflow-hidden">
+        <div className="bg-white rounded-2xl border border-[#eaecf0] h-[62dvh] flex flex-col">
           <div className="overflow-x-auto">
 
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#eaecf0]">
+                <tr className="border-b border-[#eaecf0] bg-[#F7F7F7]">
                   <th className="text-left p-4 w-12">
                     <Checkbox
                       checked={allSelected}
@@ -276,7 +319,12 @@ export function ClientsTable({
 
 
               <tbody>
-                {sortedClients.length === 0 ? (
+               {loading ? (
+  Array.from({ length: rowsPerPage }).map((_, i) => (
+    <ClientRowSkeleton key={i} />
+  ))
+) : sortedClients.length === 0 ? (
+
                   <tr>
                     <td colSpan={8} className="h-[50vh]">
                       <div className="flex flex-col items-center justify-center h-full text-center font-nunito">
@@ -306,15 +354,18 @@ export function ClientsTable({
                   </tr>
 
                 ) : (
-                  sortedClients.map((client, index) => (
+                  paginatedClients.map((client, index) => (
                     <tr
                       key={client.id}
+                      // style={{ height: ROW_HEIGHT }}
                       className={cn(
-                        "border-b border-[#eaecf0] hover:bg-[#f9fafb] transition",
-                        index === sortedClients.length - 1 && "border-0"
+                        "hover:bg-[#f9fafb] transition",
+                        index === paginatedClients.length - 1 && "border-0"
                       )}
                     >
-                      <td className="p-4">
+
+                      <td className="px-4 py-3">
+
                         <Checkbox
                           checked={selectedIds.includes(client.id)}
                           className="cursor-pointer"
@@ -328,9 +379,10 @@ export function ClientsTable({
                         />
                       </td>
 
-                      <td className="p-4 text-sm text-[#101828]">{client.id}</td>
-                      <td className="p-4 text-sm text-[#101828]">{client.name}</td>
-                      <td className="p-4">
+                      <td className="px-4 py-3 text-sm text-[#101828]">{client.id}</td>
+                      <td className="px-4 py-3 text-sm text-[#101828]">{client.name}</td>
+                      <td className="px-4 py-3">
+
                         <span
                           className={cn(
                             "inline-flex items-center px-3 py-1 rounded-md text-xs font-medium border",
@@ -340,7 +392,8 @@ export function ClientsTable({
                           {client.status}
                         </span>
                       </td>
-                      <td className="p-4">
+                     <td className="px-4 py-3">
+
                         <div className="flex items-center gap-3">
                           <span className="text-sm border rounded-md px-2">
                             {client.riskScore}
@@ -350,9 +403,10 @@ export function ClientsTable({
                           </span>
                         </div>
                       </td>
-                      <td className="p-4 text-sm text-[#475467]">{client.email}</td>
-                      <td className="p-4 text-sm text-[#475467]">{client.phone}</td>
-                      <td className="p-4">
+                      <td className="px-4 py-3 text-sm text-[#475467]">{client.email}</td>
+                      <td className="px-4 py-3text-sm text-[#475467]">{client.phone}</td>
+                      <td className="px-4 py-3">
+
                         <Button variant="ghost" size="icon">
                           <Link href="/client-profile">
                             <ArrowRight className="h-4 w-4" />
@@ -366,9 +420,78 @@ export function ClientsTable({
 
 
             </table>
+
           </div>
         </div>
       </div>
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between">
+          <span className="text-[16px]">
+            <span className="text-black">
+              {String(currentPage).padStart(2, "0")}
+            </span>
+            {" / "}
+            <span className="text-[#667085]">
+              {String(totalPages).padStart(2, "0")}
+            </span>
+          </span>
+
+          <div className="flex items-center">
+            {/* PREVIOUS */}
+            <button
+              onClick={() => currentPage > 1 && setCurrentPage((p) => p - 1)}
+              disabled={currentPage === 1}
+              className={cn(
+                "h-10 w-10 flex items-center justify-center rounded-full transition",
+                currentPage === 1
+                  ? "text-[#667085] cursor-not-allowed"
+                  : "text-black hover:bg-gray-100 cursor-pointer"
+              )}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="15"
+                height="15"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"
+                />
+              </svg>
+            </button>
+
+            {/* NEXT */}
+            <button
+              onClick={() =>
+                currentPage < totalPages && setCurrentPage((currentPage) => currentPage + 1)
+              }
+              disabled={currentPage === totalPages}
+              className={cn(
+                "h-10 w-10 flex items-center justify-center rounded-full transition",
+                currentPage === totalPages
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-[#101828] hover:bg-gray-100 cursor-pointer"
+              )}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="15"
+                height="15"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"
+                />
+              </svg>
+            </button>
+          </div>
+
+        </div>
+      )}
     </motion.div>
   )
 }
@@ -434,5 +557,47 @@ function SortableHeader({
         </DropdownMenu>
       </div>
     </th>
+  )
+}
+
+
+function ClientRowSkeleton() {
+  return (
+    <tr className="animate-pulse">
+      <td className="px-4 py-3">
+        <div className="h-4 w-4 bg-gray-200 rounded" />
+      </td>
+
+      <td className="px-4 py-3">
+        <div className="h-4 w-20 bg-gray-200 rounded" />
+      </td>
+
+      <td className="px-4 py-3">
+        <div className="h-4 w-32 bg-gray-200 rounded" />
+      </td>
+
+      <td className="px-4 py-3">
+        <div className="h-5 w-20 bg-gray-200 rounded-full" />
+      </td>
+
+      <td className="px-4 py-3">
+        <div className="flex gap-2">
+          <div className="h-4 w-8 bg-gray-200 rounded" />
+          <div className="h-4 w-16 bg-gray-200 rounded" />
+        </div>
+      </td>
+
+      <td className="px-4 py-3">
+        <div className="h-4 w-36 bg-gray-200 rounded" />
+      </td>
+
+      <td className="px-4 py-3">
+        <div className="h-4 w-28 bg-gray-200 rounded" />
+      </td>
+
+      <td className="px-4 py-3">
+        <div className="h-8 w-8 bg-gray-200 rounded-full" />
+      </td>
+    </tr>
   )
 }

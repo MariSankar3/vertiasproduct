@@ -25,7 +25,7 @@ const statusStyles: Record<string, string> = {
   "KYC Pending": "bg-yellow-100 text-yellow-700 border-yellow-300",
   "Risk Profile": "bg-pink-100 text-pink-700 border-pink-300",
   Hit: "bg-green-100 text-green-700 border-green-300",
-  Failed: "bg-red-200 text-red-900 border-red-700",
+  Failed: "bg-yellow-200 text-yellow-900 border-yellow-700",
 }
 
 export function SearchablePageLayout({

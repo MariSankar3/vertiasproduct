@@ -8,37 +8,20 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-[#d8d8d8] flex flex-row items-center justify-center">
+    <main className="min-h-screen bg-[#d8d8d8] flex items-center justify-center gap-8">
       <Link
         href="/signin"
-        className="inline-block m-8 px-6 py-3 bg-[#a7e55c] text-black rounded-full font-semibold hover:bg-[#95d04a] transition"
+        className="px-6 py-3 bg-[#a7e55c] text-black rounded-full font-semibold hover:bg-[#95d04a] transition"
       >
         Go to Sign In
       </Link>
+
       <Link
         href="/signup"
-        className="inline-block m-8 px-6 py-3 bg-[#a7e55c] text-black rounded-full font-semibold hover:bg-[#95d04a] transition"
+        className="px-6 py-3 bg-[#a7e55c] text-black rounded-full font-semibold hover:bg-[#95d04a] transition"
       >
         Go to Sign Up
       </Link>
-      {/* <Link
-        href="/verification"
-        className="inline-block m-8 px-6 py-3 bg-[#a7e55c] text-black rounded-full font-semibold hover:bg-[#95d04a] transition"
-      >
-        Verification
-      </Link> */}
-      {/* <Link
-        href="/calls"
-        className="inline-block m-8 px-6 py-3 bg-[#a7e55c] text-black rounded-full font-semibold hover:bg-[#95d04a] transition"
-      >
-        Calls
-      </Link>
-      <Link
-        href="/clients"
-        className="inline-block m-8 px-6 py-3 bg-[#a7e55c] text-black rounded-full font-semibold hover:bg-[#95d04a] transition"
-      >
-        Go to Clients Dashboard
-      </Link> */}
-    </div>
+    </main>
   )
 }

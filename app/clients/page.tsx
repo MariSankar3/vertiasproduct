@@ -16,7 +16,7 @@ export default function ClientsPage() {
   return (
     <div className="min-h-screen bg-[#f6f6f6]">
       <ClientsHeader activeTab="home" />
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto px-6 py-8 pb-2">
         <SearchablePageLayout
           name="CLIENTS"
           active="clients"

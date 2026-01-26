@@ -17,7 +17,7 @@ export default function CallsPage() {
   return (
     <div className="min-h-screen bg-[#f6f6f6]">
       <ClientsHeader activeTab="home" />
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto px-6 py-8 pb-1">
         <SearchablePageLayout
           name="CALLS"
           active="calls"

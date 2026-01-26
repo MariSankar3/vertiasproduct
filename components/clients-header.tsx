@@ -22,7 +22,7 @@ export function ClientsHeader({ activeTab }: ClientsHeaderProps) {
   const isNotificationActive = activeTab === "notification"
 
   return (
-    <header className="bg-[#121212] border-b border-[#d0d5dd] sticky top-0 z-50 w-full h-[100px]">
+    <header className=" bg-[#121212] border-b border-[#d0d5dd] sticky top-0 z-50 w-full h-[100px]">
       <div className="container mx-auto px-6 h-full flex items-center">
         <div className="flex items-center justify-between w-full">
 

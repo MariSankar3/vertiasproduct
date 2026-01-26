@@ -33,15 +33,14 @@ export function CallPage({
     onSearch?.("") // reset results
   }
 
-  const [showPassword, setShowPassword] = useState(false)
+  // const [showPassword, setShowPassword] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchValue, setSearchValue] = useState("")
-  const [recentPages, setRecentPages] = useState<ActivePage[]>([])
+  // const [recentPages, setRecentPages] = useState<ActivePage[]>([])
   const isTyping = searchOpen && searchValue.length > 0
   const isClosing = !searchOpen
   const [showDate, setShowDate] = useState(false)
-
-
+  const [zoomRight, setZoomRight] = useState(false)
 
   const searchContainerRef = useRef<HTMLDivElement>(null)
   const [showSuggestions, setShowSuggestions] = useState(false)
@@ -54,13 +53,13 @@ export function CallPage({
   ) || []
 
 
-  const isActive = (page: ActivePage) =>
-    active === page
-      ? "bg-black"
-      : "bg-white"
+  // const isActive = (page: ActivePage) =>
+  //   active === page
+  //     ? "bg-black"
+  //     : "bg-white"
 
-  const iconInvert = (page: ActivePage) =>
-    active === page ? "invert" : ""
+  // const iconInvert = (page: ActivePage) =>
+  //   active === page ? "invert" : ""
 
   const today = new Date()
   const next8Days = new Date()
@@ -131,9 +130,7 @@ export function CallPage({
         ),
       },
     ]
-  // State to hold the ordered keys; default order initially.
-  // We use a function initializer to avoid hydration mismatch if we read localStorage directly,
-  // but for client-side ordering consistency, we'll sync in useEffect.
+ 
   const [sortedKeys, setSortedKeys] = useState<ActivePage[]>([
     "clients",
     "log",
@@ -217,7 +214,12 @@ export function CallPage({
         <h1 className="text-2xl text-[#101828]">{name}</h1>
       </div>
 
-      <div className="flex items-center gap-3 bg-[#000] h-[48px] rounded-full ">
+      <motion.div
+        animate={{ scale: zoomRight ? 1.05 : 1 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        className="flex items-center gap-3 bg-[#000] h-[48px] rounded-full"
+      >
+
         {!searchOpen && (
           <Button
             variant="outline"
@@ -244,7 +246,7 @@ export function CallPage({
                     e.stopPropagation()
                     setShowDate(false)
                   }}
-                  className="whitespace-nowrap overflow-hidden cursor-pointer"
+                  className="whitespace-nowrap overflow-hidden cursor-pointer "
                 >
                   {formatDate(next8Days)} - {formatDate(today)}
                 </motion.span>
@@ -387,9 +389,13 @@ export function CallPage({
               variant="ghost"
               size="icon"
               onClick={() => {
+                setZoomRight(true)
                 setSearchOpen(true)
                 setSearchValue("")
                 onSearch?.("")
+
+                // reset zoom smoothly
+                setTimeout(() => setZoomRight(false), 150)
               }}
               className={`
     h-12 w-12 rounded-full shrink-0
@@ -404,6 +410,7 @@ export function CallPage({
             >
               <Search className="h-5 w-5" />
             </Button>
+
           </div>
 
         </div>
@@ -414,7 +421,7 @@ export function CallPage({
             </Button>
           </Link>
         )}
-      </div>
+      </motion.div>
     </div>
   )
 }
