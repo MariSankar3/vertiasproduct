@@ -21,8 +21,8 @@ import { ChevronsUp, ChevronsDown, ArrowUpDown, Check } from "lucide-react"
 // const clients = [] ?? clientsData 
 const clients = clientsData ?? []
 
-const ROW_HEIGHT = 70 
-const HEADER_HEIGHT = 56 
+const ROW_HEIGHT = 70
+const HEADER_HEIGHT = 56
 
 
 const statusColors: Record<string, string> = {
@@ -54,13 +54,13 @@ export function ClientsTable({
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-  // simulate API delay
-  const timer = setTimeout(() => {
-    setLoading(false)
-  }, 500) // 1.2s skeleton
+    // simulate API delay
+    const timer = setTimeout(() => {
+      setLoading(false)
+    }, 500) // 1.2s skeleton
 
-  return () => clearTimeout(timer)
-}, [])
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     const calculateRows = () => {
@@ -319,11 +319,11 @@ export function ClientsTable({
 
 
               <tbody>
-               {loading ? (
-  Array.from({ length: rowsPerPage }).map((_, i) => (
-    <ClientRowSkeleton key={i} />
-  ))
-) : sortedClients.length === 0 ? (
+                {loading ? (
+                  Array.from({ length: rowsPerPage }).map((_, i) => (
+                    <ClientRowSkeleton key={i} />
+                  ))
+                ) : sortedClients.length === 0 ? (
 
                   <tr>
                     <td colSpan={8} className="h-[50vh]">
@@ -357,12 +357,12 @@ export function ClientsTable({
                   paginatedClients.map((client, index) => (
                     <tr
                       key={client.id}
-                      // style={{ height: ROW_HEIGHT }}
                       className={cn(
-                        "hover:bg-[#f9fafb] transition",
+                        "group hover:bg-[#f9fafb] transition",
                         index === paginatedClients.length - 1 && "border-0"
                       )}
                     >
+
 
                       <td className="px-4 py-3">
 
@@ -392,7 +392,7 @@ export function ClientsTable({
                           {client.status}
                         </span>
                       </td>
-                     <td className="px-4 py-3">
+                      <td className="px-4 py-3">
 
                         <div className="flex items-center gap-3">
                           <span className="text-sm border rounded-md px-2">
@@ -408,9 +408,33 @@ export function ClientsTable({
                       <td className="px-4 py-3">
 
                         <Button variant="ghost" size="icon">
-                          <Link href="/client-profile">
-                            <ArrowRight className="h-4 w-4" />
+                          <Link
+                            href="/client-profile"
+                            className="flex items-center gap-2"
+                          >
+                            {/* View text (hidden by default) */}
+                            <span
+                              className="
+      text-[14px] text-[#535353]
+      opacity-0 translate-x-2
+      group-hover:opacity-100 group-hover:translate-x-0
+      transition-all duration-200
+      whitespace-nowrap
+    "
+                            >
+                              View
+                            </span>
+
+                            {/* Arrow (always visible, slight move on hover) */}
+                            <ArrowRight
+                              className="
+      h-4 w-4
+      transition-transform duration-200
+      group-hover:translate-x-1
+    "
+                            />
                           </Link>
+
                         </Button>
                       </td>
                     </tr>
