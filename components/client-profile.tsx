@@ -108,7 +108,7 @@ export function ClientProfile({ id }: { id?: string }) {
       className="space-y-6"
     >
 
-      <div className="min-h-screen bg-gray-100 p-4 lg:p-6">
+      <div className="min-h-screen bg-gray-100 p-4 lg:p-4">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
           <div className="bg-white p-6 rounded-xl flex flex-col items-center w-3xs">

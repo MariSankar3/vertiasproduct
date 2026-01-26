@@ -128,11 +128,6 @@ export function ClientLeftSideBar({ id }: { id?: string }) {
   </div>
 </div>
 
-
-
-
-
-
     </div>
   )
 }

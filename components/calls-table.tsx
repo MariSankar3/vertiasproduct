@@ -297,8 +297,8 @@ export function CallsTable({
                     <td
                       className={cn(
                         "p-4 text-sm font-semibold",
-                        client.call === "Buy" && "text-[#34C759]", // green
-                        client.call === "Sell" && "text-[#FF3B30]" // red
+                        client.call === "Long" && "text-[#34C759]", // green
+                        client.call === "Short" && "text-[#FF3B30]" // red
                       )}
                     >
                       {client.call}

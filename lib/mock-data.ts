@@ -1,7 +1,7 @@
 export const callsData = [
     {
         id: "CLL001",
-        call: "Buy",
+        call: "Long",
         name: "Sensex 82500 CE",
         version: "1",
         entryprice: 92.00,
@@ -15,7 +15,7 @@ export const callsData = [
     },
     {
         id: "CLL002",
-        call: "Sell",
+        call: "Short",
         name: "Sensex 98500 CE",
         version: "1",
         entryprice: 92.00,
@@ -29,7 +29,7 @@ export const callsData = [
     },
     {
         id: "CLL003",
-        call: "Buy",
+        call: "Long",
         name: "Sensex 84500 CE",
         version: "2",
         entryprice: 92.00,
@@ -43,7 +43,7 @@ export const callsData = [
     },
     {
         id: "CLL004",
-        call: "Sell",
+        call: "Short",
         name: "Sensex 32500 CE",
         version: "1",
         entryprice: 92.00,
@@ -57,7 +57,7 @@ export const callsData = [
     },
     {
         id: "CLL005",
-        call: "Buy",
+        call: "Long",
         name: "Sensex 72500 CE",
         version: "1",
         entryprice: 92.00,
@@ -71,7 +71,7 @@ export const callsData = [
     },
     {
         id: "CLL006",
-        call: "Buy",
+        call: "Long",
         name: "Sensex 68500 CE",
         version: "2",
         entryprice: 92.00,
@@ -85,7 +85,7 @@ export const callsData = [
     },
     {
         id: "CLL007",
-        call: "Sell",
+        call: "Short",
         name: "Sensex 86500 CE",
         version: "1",
         entryprice: 105.00,
@@ -99,7 +99,7 @@ export const callsData = [
     },
     {
         id: "CLL008",
-        call: "Buy",
+        call: "Long",
         name: "Sensex 90500 CE",
         version: "2",
         entryprice: 84.50,
@@ -113,7 +113,7 @@ export const callsData = [
     },
     {
         id: "CLL009",
-        call: "Sell",
+        call: "Short",
         name: "Sensex 75500 PE",
         version: "1",
         entryprice: 110.00,
@@ -127,7 +127,7 @@ export const callsData = [
     },
     {
         id: "CLL010",
-        call: "Buy",
+        call: "Long",
         name: "Sensex 69500 CE",
         version: "1",
         entryprice: 78.00,
@@ -141,7 +141,7 @@ export const callsData = [
     },
     {
         id: "CLL011",
-        call: "Sell",
+        call: "Short",
         name: "Sensex 92500 CE",
         version: "3",
         entryprice: 132.00,
@@ -155,7 +155,7 @@ export const callsData = [
     },
     {
         id: "CLL012",
-        call: "Buy",
+        call: "Long",
         name: "Sensex 81500 PE",
         version: "1",
         entryprice: 96.00,
@@ -169,7 +169,7 @@ export const callsData = [
     },
     {
         id: "CLL013",
-        call: "Sell",
+        call: "Short",
         name: "Sensex 84500 CE",
         version: "2",
         entryprice: 101.00,
@@ -183,7 +183,7 @@ export const callsData = [
     },
     {
         id: "CLL014",
-        call: "Buy",
+        call: "Long",
         name: "Sensex 77500 PE",
         version: "1",
         entryprice: 89.00,
