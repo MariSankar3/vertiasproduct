@@ -9,6 +9,7 @@ html, body {
   overflow-y: scroll;
 }
 
+
 /* Hide scrollbar – Chrome, Edge, Safari */
 body::-webkit-scrollbar {
   display: none;

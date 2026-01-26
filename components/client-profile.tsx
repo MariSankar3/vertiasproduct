@@ -67,9 +67,14 @@ const clients = [
 ]
 
 
+import { clientsData } from "@/lib/mock-data"
 
-export function ClientProfile() {
+export function ClientProfile({ id }: { id?: string }) {
   const [activeTab, setActiveTab] = useState("all")
+
+  // Find client data based on ID, fallback to first mocked client if not found or no ID provided
+  // In a real app, you might want to show loading state or 404
+  const clientData = clientsData.find(c => c.id === id) || clientsData[0]
 
   function Section({ title }: { title: string }) {
     return <h3 className="text-lg font-semibold border-b pb-2">{title}</h3>;
@@ -113,14 +118,14 @@ export function ClientProfile() {
               alt="profile"
             />
 
-            <h2 className="text-xl font-semibold mt-4">Suganth Alagesan</h2>
+            <h2 className="text-xl font-semibold mt-4">{clientData.name}</h2>
 
             <div className="flex gap-2 mt-2">
               <span className="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full">
-                Active
+                {clientData.status}
               </span>
               <span className="px-3 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
-                Maharathi
+                {clientData.riskCategory}
               </span>
             </div>
 
@@ -138,7 +143,7 @@ export function ClientProfile() {
 
             <SubTitle title="Personal Details" />
 
-            <InfoBox label="Full Name" value="Rajesh Kumar" />
+            <InfoBox label="Full Name" value={clientData.name} />
             <InfoBox label="Gender" value="Male" />
             <InfoBox label="Date of Birth" value="15-May-1991" />
             <InfoBox label="Profession" value="IT Professional" />

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Users, DownloadIcon, UserIcon,ArrowLeft } from "lucide-react"
+import { Users, DownloadIcon, UserIcon, ArrowLeft, MessageCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 import { Card } from "./ui/card"
@@ -20,8 +20,11 @@ const tabs = [
 
 
 
-export function ClientLeftSideBar() {
-const pathname = usePathname()
+import { clientsData } from "@/lib/mock-data"
+
+export function ClientLeftSideBar({ id }: { id?: string }) {
+  const pathname = usePathname()
+  const clientData = clientsData.find(c => c.id === id) || clientsData[0]
 
   function Section({ title }: { title: string }) {
     return <h3 className="text-lg font-semibold border-b pb-2">{title}</h3>;
@@ -54,42 +57,44 @@ const pathname = usePathname()
         <div className="flex items-center justify-between bg-black text-white px-4 h-14 rounded-full mx-4 md:mx-8 lg:mx-0">
           <div className="flex items-center gap-4">
             <Link href="/clients">
-  <button
-    type="button"
-    className="cursor-pointer h-10 w-10 rounded-full bg-white text-black flex items-center justify-center hover:bg-black hover:text-white transition"
-    aria-label="Go to dashboard"
-  >
-    <ArrowLeft className="h-6 w-6" />
-  </button>
-</Link>
-            <h1 className="text-base md:text-lg">CLIENT PROFILE</h1>
+              <button
+                type="button"
+                className="cursor-pointer h-10 w-10 rounded-full bg-white text-black flex items-center justify-center hover:bg-black hover:text-white transition"
+                aria-label="Go to dashboard"
+              >
+                <ArrowLeft className="h-6 w-6" />
+              </button>
+            </Link>
+            <h1 className="text-base md:text-lg uppercase">{clientData.name}</h1>
           </div>
 
         </div>
-        <div className="flex items-center gap-4">
-          <div className="h-12 w-12 rounded-full bg-[#fff] flex items-center justify-center">
+        <div className="flex items-center gap-4 bg-[#121212] p-1 rounded-full">
+          <div className="h-12 w-12 rounded-full border border-gray-400 flex items-center justify-center">
 
-            <Users className="h-6 w-6 text-black" />
+            <MessageCircle className="h-6 w-6 text-white" />
 
           </div>
-          <div className="h-12 w-12 rounded-full bg-[#fff] flex items-center justify-center">
+          <div className="h-12 w-12 rounded-full  border border-gray-400 flex items-center justify-center">
             <Image
-              src="/dashboard_icon3.png"
+              src="/noti.png"
               alt="Dashboard Graph"
-              width={24}
-              height={24}
-              className="object-contain"
+              width={20}
+              height={20}
+              className="object-contain text-white"
             />
           </div>
-          <div className="h-12 w-12 rounded-full bg-[#fff] flex items-center justify-center">
-            <Image
-              src="/dashboard_icon2.png"
-              alt="Dashboard Graph"
-              width={24}
-              height={24}
-              className="object-contain"
-            />
+          <div className="h-12 w-12 rounded-full border border-gray-400 bg-black flex items-center justify-center">
+         <Image
+  src="/dashboard_icon3.png"
+  alt="Dashboard Graph"
+  width={20}
+  height={20}
+  className="object-contain invert"
+/>
+
           </div>
+
         </div>
 
       </div>
@@ -115,10 +120,17 @@ const pathname = usePathname()
       </Link>
     )
   })}
+
+  <div className="ml-auto">
+    <div className="w-14 h-10 bg-white rounded-full border border-gray-400 flex items-center justify-center">
+    <DownloadIcon width={18} height={18} />
+    </div>
+  </div>
 </div>
 
 
-      
+
+
 
 
     </div>

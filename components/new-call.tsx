@@ -15,7 +15,7 @@ export function NewCall() {
     <div className="min-h-screen bg-[#f7f7f7]">
       <div className="flex items-center justify-between bg-black text-white px-2 h-14 rounded-full mx-8">
         <div className="flex items-center gap-4">
-          <Link href="/dashboard">
+          <Link href="/calls">
   <button
     type="button"
     className="h-10 w-10 rounded-full bg-white text-black flex items-center justify-center hover:bg-black hover:text-white transition cursor-pointer"

@@ -409,7 +409,7 @@ export function ClientsTable({
 
                         <Button variant="ghost" size="icon">
                           <Link
-                            href="/client-profile"
+                            href={`/client-profile/${client.id}`}
                             className="flex items-center gap-2"
                           >
                             {/* View text (hidden by default) */}

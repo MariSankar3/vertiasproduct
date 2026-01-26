@@ -31,13 +31,13 @@ export function NewClients() {
       <div className="rounded-xl max-w-6xl md:p-10 flex flex-col md:flex-row gap-8">
 
         <div className="flex-1 space-y-5">
-          <InputBox label="Client First Name" value="Suganth" />
-          <InputBox label="Client 2nd Name" value="Design" />
-          <InputBox label="Email" value="myregistermail@mail.com" />
-          <InputBox label="Mobile Number" value="+91 91761 12345" />
+          <InputBox label="Client First Name" value="" />
+          <InputBox label="Client 2nd Name" value="" />
+          <InputBox label="Email" value="" /> 
+          <InputBox label="Mobile Number" value="" />
           <InputBox
             label="WA Mobile Number (optional)"
-            value="+91 91761 12345"
+            value=""
           />
         </div>
 

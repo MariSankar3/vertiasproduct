@@ -102,7 +102,7 @@ export function SearchablePageLayout({
               <button
                 type="button"
                 onClick={() => setIsFilterOpen(false)}
-                className="rounded-full p-1 text-gray-500 hover:bg-gray-100"
+                className="rounded-full p-1 text-gray-500 hover:bg-gray-100 cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>

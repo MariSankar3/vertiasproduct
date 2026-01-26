@@ -85,12 +85,12 @@ export function CallsTable({
           </h2>
 
           <p className="mt-2 text-[16px] text-[#888888] max-w-md">
-            Start by give your first advice to the Suganth Alagesan!
+            Start by give your first advice !
           </p>
 
           <Link href="/newcall">
             <Button className="text-[16px] font-bold cursor-pointer mt-6 bg-[#A7E55C] text-[#121212] rounded-full px-6 hover:bg-[#A7E55C] hover:scale-[1.05] transition">
-              + Give Advice
+              + New Calls
             </Button>
           </Link>
 
@@ -329,7 +329,9 @@ export function CallsTable({
                         size="icon"
                         className="h-8 w-8 text-[#667085] hover:text-[#101828] hover:bg-[#f9fafb]"
                       >
+                        <Link href={`/editcall/${client.id}`}>
                         <Edit className="h-4 w-4" />
+                        </Link>
                       </Button>
                     </td>
                   </tr>
