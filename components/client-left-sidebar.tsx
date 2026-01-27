@@ -71,13 +71,17 @@ export function ClientLeftSideBar({ id }: { id?: string }) {
 
         </div>
         <div className="flex items-center gap-4 bg-[#121212] p-1 rounded-full">
-          <div className={cn(
-             "h-12 w-12 rounded-full border border-gray-400 flex items-center justify-center transition"
+          <Link href="/messager">
+           <div className={cn(
+             "h-12 w-12 rounded-full border border-gray-400 flex items-center justify-center transition",
+             pathname === "/messager" ? "bg-[#A7E55C] border-transparent" : "bg-transparent"
            )}>
 
-            <MessageCircle  className="object-contain text-white" />
+            <MessageCircle className={cn(
+                "object-contain",
+                pathname === "/messager" ? "text-black" : "invert")} />
           </div>
-
+</Link>
 
 
           <Link href="/client-notifications">
