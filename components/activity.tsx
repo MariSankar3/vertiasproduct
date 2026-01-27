@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { EditIcon, Users } from "lucide-react";
-import Image from "next/image";
+import { EditIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion"  
+import { motion } from "framer-motion";
+
+type ConfigKey = "message" | "push" | "mail" | "whatsapp" | "telegram";
 
 export function Activity() {
-  const [activeTab, setActiveTab] = useState("all");
-  const [config, setConfig] = useState({
+  const [config, setConfig] = useState<Record<ConfigKey, boolean>>({
     message: true,
     push: true,
     mail: true,
@@ -16,81 +16,103 @@ export function Activity() {
     telegram: true,
   });
 
-  const toggle = (key: string) => {
+  const toggle = (key: ConfigKey) => {
     setConfig((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  // Reusable row component
+  /* ---------- Reusable Animated Toggle Row ---------- */
   const Row = ({
     label,
     value,
-    toggleValue,
+    enabled,
+    onToggle,
   }: {
     label: string;
-    value: string | boolean;
-    toggleValue: () => void;
+    value?: string;
+    enabled: boolean;
+    onToggle: () => void;
   }) => (
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-3 border-b border-gray-200">
-      <div className="flex items-center gap-3">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 border-b last:border-b-0">
+      <div className="flex items-center gap-4">
+        {/* Toggle */}
         <button
-          onClick={toggleValue}
-          className={`w-10 h-5 flex items-center rounded-full p-1 transition ${
-            typeof value === "boolean" && value ? "bg-green-500" : "bg-gray-300"
-          }`}
+          onClick={onToggle}
+          className={cn(
+            "relative w-10 h-5 rounded-full px-1 flex items-center transition-colors duration-300",
+            enabled ? "bg-green-500" : "bg-gray-300"
+          )}
+          aria-pressed={enabled}
         >
-          <div
-            className={`bg-white w-4 h-4 rounded-full shadow transform transition ${
-              typeof value === "boolean" && value ? "translate-x-5" : ""
-            }`}
+          {/* Animated knob */}
+          <motion.span
+            layout
+            transition={{
+              type: "spring",
+              stiffness: 400,
+              damping: 30,
+            }}
+            className="w-4 h-4 bg-white rounded-full shadow"
+            style={{
+              marginLeft: enabled ? "1.25rem" : "0rem",
+            }}
           />
         </button>
+
         <span className="font-medium">{label}</span>
       </div>
 
-      <div className="flex items-center gap-2 mt-2 sm:mt-0 text-gray-700">
-        {typeof value === "string" ? value : ""}
+      <div className="flex items-center gap-3 mt-2 sm:mt-0 text-gray-700">
+        {value && <span className="text-[16px]">{value}</span>}
         <EditIcon className="text-green-600 cursor-pointer" />
       </div>
     </div>
   );
 
   return (
-      <motion.div
-initial={{ opacity: 0, y: 0 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className="space-y-6">
-      <div className="mt-5 bg-white shadow-md rounded-xl p-6">
-        <h2 className="text-xl font-semibold mb-4">Notification configuration</h2>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="space-y-6"
+    >
+      <div className="mt-5 bg-white rounded-xl p-6">
+        <h2 className="text-xl font-semibold pb-3 border-b border-gray-200">
+          Notification configuration
+        </h2>
 
         <Row
           label="Message"
-          value={config.message}
-          toggleValue={() => toggle("message")} 
+          value="+91-91761939390"
+          enabled={config.message}
+          onToggle={() => toggle("message")}
         />
 
         <Row
           label="Push notification"
-          value={config.push}
-          toggleValue={() => toggle("push")}
+          value="ON"
+          enabled={config.push}
+          onToggle={() => toggle("push")}
         />
 
         <Row
           label="Mail"
           value="suganthak31@gmail.com, vasuak_3112@yahoo.in, +5"
-          toggleValue={() => toggle("mail")}
+          enabled={config.mail}
+          onToggle={() => toggle("mail")}
         />
 
         <Row
           label="WhatsApp"
           value="+91-91761939390"
-          toggleValue={() => toggle("whatsapp")}
+          enabled={config.whatsapp}
+          onToggle={() => toggle("whatsapp")}
         />
 
         <Row
           label="Telegram"
           value="@suganthalagesn"
-          toggleValue={() => toggle("telegram")}
+          enabled={config.telegram}
+          onToggle={() => toggle("telegram")}
         />
       </div>
     </motion.div>

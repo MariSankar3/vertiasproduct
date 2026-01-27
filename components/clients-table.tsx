@@ -305,8 +305,10 @@ export function ClientsTable({
 
                   <th className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider">Status</th>
                   <th className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider">
-                    Risk Score & Category
+                    Risk Score
                   </th>
+                  <th className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider">
+                    Category                  </th>
                   <th className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider">
                     Email Address
                   </th>
@@ -398,6 +400,11 @@ export function ClientsTable({
                           <span className="text-sm border rounded-md px-2">
                             {client.riskScore}
                           </span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+
+                        <div className="flex items-center gap-3">
                           <span className="text-sm border rounded-md px-2">
                             {client.riskCategory}
                           </span>
@@ -415,9 +422,9 @@ export function ClientsTable({
                             {/* View text (hidden by default) */}
                             <span
                               className="
-      text-[14px] text-[#535353]
-      opacity-0 translate-x-2
-      group-hover:opacity-100 group-hover:translate-x-0
+                           text-[14px] text-[#535353]
+       opacity-0 tr  anslate-x-2
+        group-hover:opacity-100 group-hover:translate-x-0
       transition-all duration-200
       whitespace-nowrap
     "
@@ -605,12 +612,11 @@ function ClientRowSkeleton() {
       </td>
 
       <td className="px-4 py-3">
-        <div className="flex gap-2">
-          <div className="h-4 w-8 bg-gray-200 rounded" />
-          <div className="h-4 w-16 bg-gray-200 rounded" />
-        </div>
+        <div className="h-4 w-8 bg-gray-200 rounded" />
       </td>
-
+      <td className="px-4 py-3">
+        <div className="h-4 w-8 bg-gray-200 rounded" />
+      </td>
       <td className="px-4 py-3">
         <div className="h-4 w-36 bg-gray-200 rounded" />
       </td>

@@ -1,12 +1,18 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
-import { Edit } from "lucide-react"
+import { Edit, ChevronsUp, ChevronsDown, ArrowUpDown, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import Image from "next/image"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 // import { count } from "console"
 
 import { callsData } from "@/lib/mock-data"
@@ -16,7 +22,12 @@ const ROW_HEIGHT = 65
 const HEADER_HEIGHT = 56 
 
 
+
+type SortKey = "timedate" | null
+type SortOrder = "asc" | "desc" | null
+
 type CallsTableProps = {
+
   searchQuery?: string
   statusFilters?: string[]
   categoryFilters?: string[]
@@ -30,6 +41,8 @@ export function CallsTable({
   const [activeTab, setActiveTab] = useState("all")
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(8)
+  const [sortKey, setSortKey] = useState<SortKey>(null)
+  const [sortOrder, setSortOrder] = useState<SortOrder>(null)
 
   useEffect(() => {
     const calculateRows = () => {
@@ -155,16 +168,60 @@ export function CallsTable({
     return true
   })
 
-  const totalPages = Math.ceil(filteredClients.length / rowsPerPage)
+  const sortedClients = useMemo(() => {
+    if (!sortKey || !sortOrder) return filteredClients
+
+    return [...filteredClients].sort((a, b) => {
+      if (sortKey === "timedate") {
+        const parseDate = (dateStr: string) => {
+          // Format: "21-Oct-2025, 09:25 AM"
+          try {
+             // Remove comma and split
+             const parts = dateStr.replace(',', '').split(' ');
+             const dateParts = parts[0].split('-');
+             const timeParts = parts[1].split(':');
+             const ampm = parts[2];
+             
+             const day = parseInt(dateParts[0]);
+             const monthStr = dateParts[1];
+             const year = parseInt(dateParts[2]);
+             
+             let hour = parseInt(timeParts[0]);
+             const minute = parseInt(timeParts[1]);
+             
+             const months: {[key: string]: number} = {
+                 'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+                 'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+             };
+             
+             if (ampm === 'PM' && hour !== 12) hour += 12;
+             if (ampm === 'AM' && hour === 12) hour = 0;
+             
+             return new Date(year, months[monthStr], day, hour, minute).getTime();
+          } catch (e) {
+             return 0;
+          }
+        }
+        
+        const dateA = parseDate(a.timedate)
+        const dateB = parseDate(b.timedate)
+        
+        return sortOrder === "asc" ? dateA - dateB : dateB - dateA
+      }
+      return 0
+    })
+  }, [filteredClients, sortKey, sortOrder])
+
+  const totalPages = Math.ceil(sortedClients.length / rowsPerPage)
 
   const paginatedClients = useMemo(() => {
     const start = (currentPage - 1) * rowsPerPage
-    return filteredClients.slice(start, start + rowsPerPage)
-  }, [filteredClients, currentPage, rowsPerPage])
+    return sortedClients.slice(start, start + rowsPerPage)
+  }, [sortedClients, currentPage, rowsPerPage])
 
   useEffect(() => {
     setCurrentPage(1)
-  }, [activeTab, searchQuery, statusFilters, categoryFilters])
+  }, [activeTab, searchQuery, statusFilters, categoryFilters, sortKey, sortOrder])
 
 
   return (
@@ -226,6 +283,7 @@ export function CallsTable({
                   Call Type
                 </th>
                 <th className="text-left p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">Stock Name</th>
+                 <th className="text-left p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">Segment</th>
                 <th className="text-left p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">Versions</th>
                 <th className="text-left p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">
                   Entry Price
@@ -239,9 +297,16 @@ export function CallsTable({
                 <th className="text-left p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">
                   Risk Ratio
                 </th>
-                <th className="text-left p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">
-                  Call Time / Date
-                </th>
+                <SortableHeader
+                    label="Call Time / Date"
+                    sKey="timedate"
+                    currentSortKey={sortKey}
+                    currentSortOrder={sortOrder}
+                    onSort={(k, o) => {
+                      setSortKey(k)
+                      setSortOrder(o)
+                    }}
+                  />
                 <th className="text-left p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">
                   Validity
                 </th>
@@ -305,6 +370,7 @@ export function CallsTable({
                     </td>
 
                     <td className="p-4 text-sm font-medium text-[#101828]">{client.name}</td>
+                    <td className="p-4 text-sm">{client.segment}</td>
                     <td className="p-4 text-sm font-medium text-[#101828]">{client.version}</td>
                     <td className="p-4 text-sm">{client.entryprice}</td>
                     <td className="p-4 text-sm">{client.targetprice}</td>
@@ -418,11 +484,75 @@ export function CallsTable({
 function TableSkeletonRow() {
   return (
     <tr className="animate-pulse">
-      {Array.from({ length: 12 }).map((_, i) => (
+      {Array.from({ length: 13 }).map((_, i) => (
         <td key={i} className="p-4 py-6">
           <div className="h-4 w-full rounded-md bg-gray-200" />
         </td>
       ))}
     </tr>
+  )
+}
+
+function SortableHeader({
+  label,
+  sKey,
+  currentSortKey,
+  currentSortOrder,
+  onSort,
+}: {
+  label: string
+  sKey: SortKey
+  currentSortKey: SortKey
+  currentSortOrder: SortOrder
+  onSort: (key: SortKey, order: SortOrder) => void
+}) {
+  const isSelected = currentSortKey === sKey
+
+  return (
+    <th className="p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">
+      <div className="flex items-center gap-1">
+        <span>{label}</span>
+        <DropdownMenu modal={false}>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 ml-1 p-0 hover:bg-transparent"
+            >
+              {!isSelected || !currentSortOrder ? (
+                <ArrowUpDown className="h-3 w-3 text-gray-400" />
+              ) : currentSortOrder === "asc" ? (
+                <ChevronsUp className="h-3 w-3 text-[#101828]" />
+              ) : (
+                <ChevronsDown className="h-3 w-3 text-[#101828]" />
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-[150px]">
+            <DropdownMenuItem
+              onClick={() => onSort(null, null)}
+              className="flex items-center justify-between"
+            >
+              <span>Normal</span>
+              {!isSelected || !currentSortOrder ? <Check className="h-4 w-4" /> : null}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => onSort(sKey, "asc")}
+              className="flex items-center justify-between"
+            >
+              <span>Ascending</span>
+              {isSelected && currentSortOrder === "asc" ? <Check className="h-4 w-4" /> : <ChevronsUp className="h-3 w-3 text-gray-400" />}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => onSort(sKey, "desc")}
+              className="flex items-center justify-between"
+            >
+              <span>Descending</span>
+              {isSelected && currentSortOrder === "desc" ? <Check className="h-4 w-4" /> : <ChevronsDown className="h-3 w-3 text-gray-400" />}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </th>
   )
 }

@@ -14,6 +14,7 @@ const tabs = [
   { key: "userprofile", label: "User Profile", count: 24, href: "/client-profile" },
   { key: "calls", label: "CALLS", count: 24, href: "/clientsprofile-table" },
   { key: "risk", label: "Risk Profile", count: 24, href: "/risk-profile" },
+  { key: "consent", label: "Consent", count: 24, href: "/consent" },
   { key: "billing", label: "Billing", count: 24, href: "/billing" },
   { key: "activity", label: "Activity", count: 24, href: "/activity" },
 ];
@@ -103,12 +104,16 @@ export function ClientLeftSideBar({ id }: { id?: string }) {
 
       <div className="flex items-center gap-3 mt-2 mb-2 pl-3">
   {tabs.map((tab) => {
-    const isActive = pathname === tab.href
+    // Dynamically update href for User Profile if ID exists
+    const href = tab.key === "userprofile" && id ? `/client-profile/${id}` : tab.href
+    
+    // Check if active: exact match OR (for userprofile) starts with /client-profile/
+    const isActive = pathname === href || (tab.key === "userprofile" && pathname.startsWith("/client-profile/"))
 
     return (
       <Link
         key={tab.key}
-        href={tab.href}
+        href={href}
         className={cn(
           "px-6 py-2 rounded-full font-medium border transition border-[#ccc] inline-flex items-center",
           isActive
@@ -121,9 +126,12 @@ export function ClientLeftSideBar({ id }: { id?: string }) {
     )
   })}
 
-  <div className="ml-auto">
+  <div className="ml-auto flex gap-2">
     <div className="w-14 h-10 bg-white rounded-full border border-gray-400 flex items-center justify-center">
     <DownloadIcon width={18} height={18} />
+    </div>
+    <div className="bg-[#A7E55C] flex items-center justify-center rounded-full px-4 font-semibold">
+      Send link for Risk profile
     </div>
   </div>
 </div>
