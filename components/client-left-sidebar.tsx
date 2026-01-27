@@ -71,24 +71,35 @@ export function ClientLeftSideBar({ id }: { id?: string }) {
 
         </div>
         <div className="flex items-center gap-4 bg-[#121212] p-1 rounded-full">
-          <div className="h-12 w-12 rounded-full border border-gray-400 flex items-center justify-center">
+          <div className={cn(
+             "h-12 w-12 rounded-full border border-gray-400 flex items-center justify-center transition"
+           )}>
 
-            <MessageCircle className="h-6 w-6 text-white" />
-
+            <MessageCircle  className="object-contain text-white" />
           </div>
-          <div className="h-12 w-12 rounded-full  border border-gray-400 flex items-center justify-center">
+
+
+
+          <Link href="/client-notifications">
+          <div className={cn(
+             "h-12 w-12 rounded-full border border-gray-400 flex items-center justify-center transition",
+             pathname === "/client-notifications" ? "bg-[#A7E55C] border-transparent" : "bg-transparent"
+           )}>
             <Image
-              src="/noti.png"
+              src="/noti.svg"
               alt="Dashboard Graph"
               width={20}
               height={20}
-              className="object-contain text-white"
+              className={cn(
+                "object-contain",
+                pathname === "/client-notifications" ? "text-white" : "invert")}
             />
           </div>
+          </Link>
           <Link href="/activity">
            <div className={cn(
              "h-12 w-12 rounded-full border border-gray-400 flex items-center justify-center transition",
-             pathname === "/activity" ? "bg-[#A7E55C] border-transparent" : "bg-black"
+             pathname === "/activity" ? "bg-[#A7E55C] border-transparent" : "bg-transparent"
            )}>
              <Image
               src="/dashboard_icon3.png"
