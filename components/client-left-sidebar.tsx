@@ -16,7 +16,7 @@ const tabs = [
   { key: "risk", label: "Risk Profile", count: 24, href: "/risk-profile" },
   { key: "consent", label: "Consent", count: 24, href: "/consent" },
   { key: "billing", label: "Billing", count: 24, href: "/billing" },
-  { key: "activity", label: "Activity", count: 24, href: "/activity" },
+  { key: "activity", label: "Activity", count: 24, href: "", disabled: true},
 ];
 
 
@@ -85,16 +85,23 @@ export function ClientLeftSideBar({ id }: { id?: string }) {
               className="object-contain text-white"
             />
           </div>
-          <div className="h-12 w-12 rounded-full border border-gray-400 bg-black flex items-center justify-center">
-         <Image
-  src="/dashboard_icon3.png"
-  alt="Dashboard Graph"
-  width={20}
-  height={20}
-  className="object-contain invert"
-/>
-
-          </div>
+          <Link href="/activity">
+           <div className={cn(
+             "h-12 w-12 rounded-full border border-gray-400 flex items-center justify-center transition",
+             pathname === "/activity" ? "bg-[#A7E55C] border-transparent" : "bg-black"
+           )}>
+             <Image
+              src="/dashboard_icon3.png"
+              alt="Dashboard Graph"
+              width={20}
+              height={20}
+              className={cn(
+                "object-contain",
+                pathname === "/activity" ? "text-black" : "invert"
+              )}
+             />
+           </div>
+          </Link>
 
         </div>
 
