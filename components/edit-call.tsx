@@ -4,6 +4,7 @@ import { Search, ArrowLeft } from "lucide-react"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { callsData } from "@/lib/mock-data"
+import {motion} from "framer-motion"
 import { useRouter } from "next/navigation"
 
 interface EditCallProps {
@@ -45,7 +46,11 @@ export function EditCall({ id }: EditCallProps) {
     }
 
     return (
-        <div className="min-h-screen bg-[#f7f7f7]">
+        <motion.div 
+         initial={{ opacity: 0, y: 0 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="min-h-screen bg-[#f7f7f7]">
             <div className="flex items-center justify-between bg-black text-white px-2 h-14 rounded-full mx-8">
                 <div className="flex items-center gap-4">
                     <Link href="/calls">
@@ -187,6 +192,6 @@ export function EditCall({ id }: EditCallProps) {
                 </div>
             </div>
 
-        </div>
+        </motion.div>
     )
 }

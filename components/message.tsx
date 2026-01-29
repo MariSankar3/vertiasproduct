@@ -4,7 +4,7 @@ import { motion, LayoutGroup } from "framer-motion";
 import Image from "next/image";
 import { RefreshCw, Smile, Paperclip } from "lucide-react";
 
-export function Messager() {
+export function Messager({name}: {name: string}) {
   return (
     <LayoutGroup>
       <motion.div
@@ -29,10 +29,10 @@ export function Messager() {
 
             <div>
               <p className="font-semibold text-gray-900">
-                Ethereal design
+                {name}
               </p>
               <p className="text-sm text-gray-500">
-                @Suganth Alagesan
+                @{name}
               </p>
             </div>
           </div>

@@ -8,12 +8,17 @@ export const metadata: Metadata = {
   description: "Manage your clients",
 }
 
-export default function BillingPage() {
+interface PageProps {
+  params: Promise<{ id: string }>
+}
+
+export default async function BillingPage({ params }: PageProps) {
+  const { id } = await params
   return (
     <div className="min-h-screen bg-[#f6f6f6]">
       <ClientsHeader activeTab="home" />
       <main className="container mx-auto px-6 py-8">
-        <ClientLeftSideBar />
+        <ClientLeftSideBar id={id} />
         <Billing />
       </main>
     </div>

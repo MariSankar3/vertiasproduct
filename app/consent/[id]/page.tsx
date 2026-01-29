@@ -8,12 +8,17 @@ export const metadata: Metadata = {
   description: "Manage your clients",
 }
 
-export default function Consent(){
+interface PageProps {
+  params: Promise<{ id: string }>
+}
+
+export default async function Consent({ params }: PageProps) {
+    const { id } = await params
     return (
         <div className="min-h-screen bg-[#f6f6f6]">
       <ClientsHeader activeTab="home" />
       <main className="container mx-auto px-6 py-8">
-        <ClientLeftSideBar />
+        <ClientLeftSideBar id={id} />
          <ConsentTable/>
       </main>
     </div>

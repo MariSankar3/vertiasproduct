@@ -1,31 +1,28 @@
 "use client"
-
-import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Users, DownloadIcon, UserIcon, ArrowLeft, MessageCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 import { Card } from "./ui/card"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-
-
-
-const tabs = [
-  { key: "userprofile", label: "User Profile", count: 24, href: "/client-profile" },
-  { key: "calls", label: "CALLS", count: 24, href: "/clientsprofile-table" },
-  { key: "risk", label: "Risk Profile", count: 24, href: "/risk-profile" },
-  { key: "consent", label: "Consent", count: 24, href: "/consent" },
-  { key: "billing", label: "Billing", count: 24, href: "/billing" },
-  { key: "activity", label: "Activity", count: 24, href: "", disabled: true},
-];
-
-
-
 import { clientsData } from "@/lib/mock-data"
 
+
+
 export function ClientLeftSideBar({ id }: { id?: string }) {
+  const router = useRouter()
   const pathname = usePathname()
   const clientData = clientsData.find(c => c.id === id) || clientsData[0]
+
+  const tabs = [
+    { key: "userprofile", label: "User Profile", count: 24, href: `/client-profile/${clientData.id}` },
+    { key: "calls", label: "CALLS", count: 24, href: `/clientsprofile-table/${clientData.id}` },
+    { key: "risk", label: "Risk Profile", count: 24, href: `/risk-profile/${clientData.id}` },
+    { key: "consent", label: "Consent", count: 24, href: `/consent/${clientData.id}` },
+    { key: "billing", label: "Billing", count: 24, href: `/billing/${clientData.id}` },
+    { key: "activity", label: "Activity", count: 24, href: "", disabled: true},
+  ];
 
   function Section({ title }: { title: string }) {
     return <h3 className="text-lg font-semibold border-b pb-2">{title}</h3>;
@@ -60,7 +57,7 @@ export function ClientLeftSideBar({ id }: { id?: string }) {
             <Link href="/clients">
               <button
                 type="button"
-                className="cursor-pointer h-10 w-10 rounded-full bg-white text-black flex items-center justify-center hover:bg-black hover:text-white transition"
+                className="cursor-pointer h-10 w-10 rounded-full bg-white text-black flex items-center justify-center hover:scale-[1.05] transition"
                 aria-label="Go to dashboard"
               >
                 <ArrowLeft className="h-6 w-6" />
@@ -71,23 +68,23 @@ export function ClientLeftSideBar({ id }: { id?: string }) {
 
         </div>
         <div className="flex items-center gap-4 bg-[#121212] p-1 rounded-full">
-          <Link href="/messager">
+          <Link href={`/messager/${clientData.id}`}>
            <div className={cn(
              "h-12 w-12 rounded-full border border-gray-400 flex items-center justify-center transition",
-             pathname === "/messager" ? "bg-[#A7E55C] border-transparent" : "bg-transparent"
+             pathname.startsWith("/messager") ? "bg-[#A7E55C] border-transparent" : "bg-transparent"
            )}>
 
             <MessageCircle className={cn(
                 "object-contain",
-                pathname === "/messager" ? "text-black" : "invert")} />
+                pathname.startsWith("/messager") ? "text-black" : "invert")} />
           </div>
 </Link>
 
 
-          <Link href="/client-notifications">
+          <Link href={`/client-notifications/${clientData.id}`}>
           <div className={cn(
              "h-12 w-12 rounded-full border border-gray-400 flex items-center justify-center transition",
-             pathname === "/client-notifications" ? "bg-[#A7E55C] border-transparent" : "bg-transparent"
+             pathname.startsWith("/client-notifications") ? "bg-[#A7E55C] border-transparent" : "bg-transparent"
            )}>
             <Image
               src="/noti.svg"
@@ -96,14 +93,14 @@ export function ClientLeftSideBar({ id }: { id?: string }) {
               height={20}
               className={cn(
                 "object-contain",
-                pathname === "/client-notifications" ? "text-white" : "invert")}
+                pathname.startsWith("/client-notifications") ? "text-white" : "invert")}
             />
           </div>
           </Link>
-          <Link href="/activity">
+          <Link href={`/activity/${clientData.id}`}>
            <div className={cn(
              "h-12 w-12 rounded-full border border-gray-400 flex items-center justify-center transition",
-             pathname === "/activity" ? "bg-[#A7E55C] border-transparent" : "bg-transparent"
+             pathname.startsWith("/activity") ? "bg-[#A7E55C] border-transparent" : "bg-transparent"
            )}>
              <Image
               src="/dashboard_icon3.png"
@@ -112,7 +109,7 @@ export function ClientLeftSideBar({ id }: { id?: string }) {
               height={20}
               className={cn(
                 "object-contain",
-                pathname === "/activity" ? "text-black" : "invert"
+                pathname.startsWith("/activity") ? "text-black" : "invert"
               )}
              />
            </div>
@@ -126,10 +123,7 @@ export function ClientLeftSideBar({ id }: { id?: string }) {
 
       <div className="flex items-center gap-3 mt-2 mb-2 pl-3">
   {tabs.map((tab) => {
-    // Dynamically update href for User Profile if ID exists
-    const href = tab.key === "userprofile" && id ? `/client-profile/${id}` : tab.href
-    
-    // Check if active: exact match OR (for userprofile) starts with /client-profile/
+    const href = tab.href
     const isActive = pathname === href || (tab.key === "userprofile" && pathname.startsWith("/client-profile/"))
 
     return (
@@ -152,9 +146,12 @@ export function ClientLeftSideBar({ id }: { id?: string }) {
     <div className="w-14 h-10 bg-white rounded-full border border-gray-400 flex items-center justify-center">
     <DownloadIcon width={18} height={18} />
     </div>
-    <div className="bg-[#A7E55C] flex items-center justify-center rounded-full px-4 font-semibold">
-      Send link for Risk profile
-    </div>
+    {clientData.status === "Risk Profile" && (
+  <div className="bg-[#A7E55C] flex items-center justify-center rounded-full px-4 font-semibold">
+    Send link for Risk profile
+  </div>
+)}
+
   </div>
 </div>
 

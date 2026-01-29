@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { ClientsHeader } from "@/components/clients-header"
-import { Messager } from "@/components/message"
+import { Notification } from "@/components/notification"
 import { ClientLeftSideBar } from "@/components/client-left-sidebar"
 
 export const metadata: Metadata = {
@@ -8,13 +8,18 @@ export const metadata: Metadata = {
   description: "Manage your clients",
 }
 
-export default function ClientNotification() {
+interface PageProps {
+  params: Promise<{ id: string }>
+}
+
+export default async function ClientNotification({ params }: PageProps) {
+  const { id } = await params
   return (
     <div className="min-h-screen bg-[#f6f6f6]">
       <ClientsHeader activeTab="home" />
       <main className="container mx-auto px-6 py-8">
-        <ClientLeftSideBar />
-       <Messager />
+        <ClientLeftSideBar id={id} />
+       <Notification />
       </main>
     </div>
   )

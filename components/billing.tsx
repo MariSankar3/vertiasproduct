@@ -4,6 +4,7 @@ import { useState } from "react";
 import { DownloadIcon, EditIcon, FileIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { InvoiceDetails } from "./invoicedetails";
 
 const INVOICES = [
   { id: 1, date: "Sep 25, 2025", status: "Paid", freq: "Monthly" },
@@ -136,7 +137,7 @@ export function Billing() {
                     <FileIcon className="text-green-600" size={20} />
                   </div>
                   <div className="min-w-0">
-                    <p className="font-bold text-sm flex items-center gap-2 truncate">
+                    <p className="font-bold text-md flex items-center gap-2 truncate">
                       Monthly invoice
                      <span
   className={cn(
@@ -158,7 +159,7 @@ export function Billing() {
                 </div>
                 <button
                   onClick={() => setSelectedId(null)}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400"
+                  className="py-1.5 px-3 hover:bg-gray-100 rounded-full transition-colors text-gray-400"
                 >
                   ✕
                 </button>
@@ -214,6 +215,7 @@ export function Billing() {
                   Download PDF
                 </button>
               </div>
+              {/* <InvoiceDetails/> */}
             </motion.aside>
           )}
         </AnimatePresence>

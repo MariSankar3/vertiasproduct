@@ -258,7 +258,7 @@ export function CallsTable({
             activeTab === "inactive" ? "bg-[#a7e55c] text-[#121212]" : "bg-[#E2E2E2] text-[#667085]",
           )}
         >
-          In-Active <span className={cn("ml-2 rounded-2xl p-1 px-1.5", activeTab === "inactive" ? "bg-[#5FAE2E]/40" : "bg-[#D6D6D6] ")}>{counts.inactive}</span>
+          InActive <span className={cn("ml-2 rounded-2xl p-1 px-1.5", activeTab === "inactive" ? "bg-[#5FAE2E]/40" : "bg-[#D6D6D6] ")}>{counts.inactive}</span>
         </button>
         <button
           onClick={() => setActiveTab("failed")}

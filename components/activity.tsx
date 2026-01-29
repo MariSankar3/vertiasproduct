@@ -7,7 +7,13 @@ import { motion } from "framer-motion";
 
 type ConfigKey = "message" | "push" | "mail" | "whatsapp" | "telegram";
 
-export function Activity() {
+export function Activity({
+  name,
+  phone,
+}: {
+  name: string
+  phone: string
+}) {
   const [config, setConfig] = useState<Record<ConfigKey, boolean>>({
     message: true,
     push: true,
@@ -82,7 +88,7 @@ export function Activity() {
 
         <Row
           label="Message"
-          value="+91-91761939390"
+          value={phone}
           enabled={config.message}
           onToggle={() => toggle("message")}
         />
@@ -96,21 +102,21 @@ export function Activity() {
 
         <Row
           label="Mail"
-          value="suganthak31@gmail.com, vasuak_3112@yahoo.in, +5"
+          value={`@${name}@gmail.com,+5`}
           enabled={config.mail}
           onToggle={() => toggle("mail")}
         />
 
         <Row
           label="WhatsApp"
-          value="+91-91761939390"
+          value={phone}
           enabled={config.whatsapp}
           onToggle={() => toggle("whatsapp")}
         />
 
         <Row
           label="Telegram"
-          value="@suganthalagesn"
+          value={`@${name}`}
           enabled={config.telegram}
           onToggle={() => toggle("telegram")}
         />
