@@ -31,30 +31,29 @@ export function Billing() {
   return (
     <div className="p-4 mx-auto overflow-hidden">
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-12 items-start">
-        
         {/* LEFT: Invoice List */}
         <motion.div
           layout
-          transition={{ 
-            duration: 0.4, 
-            ease: [0.4, 0, 0.2, 1] // Custom cubic-bezier for smoother motion
+          transition={{
+            duration: 0.4,
+            ease: [0.4, 0, 0.2, 1], // Custom cubic-bezier for smoother motion
           }}
           className={cn(
             "bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden",
-            isPanelOpen ? "lg:col-span-7" : "lg:col-span-12"
+            isPanelOpen ? "lg:col-span-7" : "lg:col-span-12",
           )}
         >
           {/* STABLE HEADER */}
           <div className="p-6 flex items-center justify-between border-b border-gray-50">
-            <motion.h3 
-              layout="position" 
+            <motion.h3
+              layout="position"
               className="text-lg font-semibold text-gray-900 whitespace-nowrap"
             >
               Invoices
             </motion.h3>
-            
-            <motion.div 
-              layout="position" 
+
+            <motion.div
+              layout="position"
               className="flex items-center gap-3 shrink-0"
             >
               <button className="p-2 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors">
@@ -77,23 +76,30 @@ export function Billing() {
                     "flex items-center justify-between p-4 rounded-lg cursor-pointer transition-colors border",
                     selectedId === inv.id
                       ? "bg-blue-50 border-blue-100 shadow-sm"
-                      : "hover:bg-gray-50 border-transparent"
+                      : "hover:bg-gray-50 border-transparent",
                   )}
                 >
                   <div className="flex items-center gap-4">
-                    <input 
-                      type="checkbox" 
-                      className="w-4 h-4 rounded border-gray-300" 
+                    <input
+                      type="checkbox"
+                      className="w-4 h-4 rounded border-gray-300"
                       onClick={(e) => e.stopPropagation()}
                     />
                     <div className="flex items-center gap-3">
-                      <span className="font-medium text-gray-900 whitespace-nowrap">{inv.date}</span>
+                      <span className="font-medium text-gray-900 whitespace-nowrap">
+                        {inv.date}
+                      </span>
                       <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-gray-200 text-[10px] font-bold uppercase tracking-tight bg-white">
-                        <div className={cn(
-                          "w-1.5 h-1.5 rounded-full",
-                          inv.status === "Paid" ? "bg-green-500" : 
-                          inv.status === "Pending" ? "bg-orange-400" : "bg-red-500"
-                        )} />
+                        <div
+                          className={cn(
+                            "w-1.5 h-1.5 rounded-full",
+                            inv.status === "Paid"
+                              ? "bg-green-500"
+                              : inv.status === "Pending"
+                                ? "bg-orange-400"
+                                : "bg-red-500",
+                          )}
+                        />
                         {inv.status}
                       </div>
                     </div>
@@ -101,7 +107,7 @@ export function Billing() {
 
                   <div className="flex items-center gap-4">
                     {!isPanelOpen && (
-                      <motion.p 
+                      <motion.p
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         className="hidden sm:block text-sm text-gray-500"
@@ -110,8 +116,12 @@ export function Billing() {
                       </motion.p>
                     )}
                     <div className="flex gap-1">
-                      <button className="p-2 text-gray-400 hover:text-gray-600"><EditIcon size={18} /></button>
-                      <button className="p-2 text-gray-400 hover:text-gray-600"><DownloadIcon size={18} /></button>
+                      <button className="p-2 text-gray-400 hover:text-gray-600">
+                        <EditIcon size={18} />
+                      </button>
+                      <button className="p-2 text-gray-400 hover:text-gray-600">
+                        <DownloadIcon size={18} />
+                      </button>
                     </div>
                   </div>
                 </motion.li>
@@ -139,22 +149,23 @@ export function Billing() {
                   <div className="min-w-0">
                     <p className="font-bold text-md flex items-center gap-2 truncate">
                       Monthly invoice
-                     <span
-  className={cn(
-    "text-[10px] px-1.5 py-0.5 rounded-md font-bold border",
-    lastSelected.status === "Paid" &&
-      "border-green-600 text-green-600",
-    lastSelected.status === "Pending" &&
-      "border-orange-500 text-orange-500",
-    lastSelected.status === "Overdue" &&
-      "border-red-600 text-red-600"
-  )}
->
-  {lastSelected.status}
-</span>
-
+                      <span
+                        className={cn(
+                          "text-[10px] px-1.5 py-0.5 rounded-md font-bold border",
+                          lastSelected.status === "Paid" &&
+                            "border-green-600 text-green-600",
+                          lastSelected.status === "Pending" &&
+                            "border-orange-500 text-orange-500",
+                          lastSelected.status === "Overdue" &&
+                            "border-red-600 text-red-600",
+                        )}
+                      >
+                        {lastSelected.status}
+                      </span>
                     </p>
-                    <p className="text-xs text-gray-400 truncate">Date {lastSelected.date}</p>
+                    <p className="text-xs text-gray-400 truncate">
+                      Date {lastSelected.date}
+                    </p>
                   </div>
                 </div>
                 <button
@@ -168,30 +179,56 @@ export function Billing() {
               <div className="p-6 space-y-6 overflow-y-auto">
                 <div className="grid grid-cols-2 gap-y-4">
                   <div>
-                    <p className="text-[10px] uppercase text-gray-400 font-bold tracking-widest">Due date</p>
-                    <p className="text-sm font-semibold mt-0.5">{lastSelected.date}</p>
+                    <p className="text-[10px] uppercase text-gray-400 font-bold tracking-widest">
+                      Due date
+                    </p>
+                    <p className="text-sm font-semibold mt-0.5">
+                      {lastSelected.date}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-[10px] uppercase text-gray-400 font-bold tracking-widest">Status</p>
-                    <p className="text-sm font-semibold mt-0.5">{lastSelected.status}</p>
+                    <p className="text-[10px] uppercase text-gray-400 font-bold tracking-widest">
+                      Status
+                    </p>
+                    <p className="text-sm font-semibold mt-0.5">
+                      {lastSelected.status}
+                    </p>
                   </div>
                   <div className="col-span-1">
-                    <p className="text-[10px] uppercase text-gray-400 font-bold tracking-widest">Invoice Number</p>
-                    <p className="text-sm font-semibold mt-0.5 text-blue-600">93E29A9E</p>
+                    <p className="text-[10px] uppercase text-gray-400 font-bold tracking-widest">
+                      Invoice Number
+                    </p>
+                    <p className="text-sm font-semibold mt-0.5 text-blue-600">
+                      93E29A9E
+                    </p>
                   </div>
                   <div>
-                    <p className="text-[10px] uppercase text-gray-400 font-bold tracking-widest">Payment Method</p>
+                    <p className="text-[10px] uppercase text-gray-400 font-bold tracking-widest">
+                      Payment Method
+                    </p>
                     <p className="text-sm font-semibold mt-0.5">VISA 1175</p>
                   </div>
                 </div>
 
                 <div className="pt-6 border-t border-gray-50">
                   <p className="font-bold text-sm">Renewing monthly seats</p>
-                  <p className="text-sm text-gray-500 mb-4 mt-2">Assigned monthly seats that renewed for September 25, 2025 - October 25, 2025</p>
+                  <p className="text-sm text-gray-500 mb-4 mt-2">
+                    Assigned monthly seats that renewed for September 25, 2025 -
+                    October 25, 2025
+                  </p>
                   <div className="mt-4 space-y-4 text-sm text-gray-600">
-                    <div className="flex justify-between"><span>1 Full</span><span>$15.00</span></div>
-                    <div className="flex justify-between"><span>0 Dev</span><span>$0.00</span></div>
-                    <div className="flex justify-between"><span>0 Collab</span><span>$0.00</span></div>
+                    <div className="flex justify-between">
+                      <span>1 Full</span>
+                      <span>$15.00</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>0 Dev</span>
+                      <span>$0.00</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>0 Collab</span>
+                      <span>$0.00</span>
+                    </div>
                   </div>
                 </div>
 

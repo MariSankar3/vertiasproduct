@@ -1,14 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Calendar,
-  Filter,
-  Download,
-  Search,
-  ArrowRight,
-  Users,
-} from "lucide-react";
+import { GripVertical, ArrowRight } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
@@ -24,7 +18,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronsUp, ChevronsDown, ArrowUpDown, Check } from "lucide-react";
+import { DndContext, closestCenter, DragOverlay } from "@dnd-kit/core";
 
+import {
+  SortableContext,
+  useSortable,
+  arrayMove,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+
+import { CSS } from "@dnd-kit/utilities";
 
 // const clients = [] ?? clientsData
 const clients = clientsData ?? [];
@@ -53,8 +56,8 @@ const ALL_COLUMNS = [
   { key: "riskScore", label: "Risk Score", mandatory: true },
   { key: "riskCategory", label: "Bucket", mandatory: true },
   { key: "email", label: "Email Address", mandatory: true },
-  { key: "actions", label: "Action", mandatory: true },
   { key: "phone", label: "Phone Number", mandatory: true },
+  { key: "actions", label: "Action", mandatory: true },
   { key: "dob", label: "Date of Birth" },
   { key: "gender", label: "Gender" },
   { key: "lastlogin", label: "Last Login" },
@@ -90,6 +93,7 @@ export function ClientsTable({
   }, []);
 
   const [showCustomize, setShowCustomize] = useState(false);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   const [visibleColumns, setVisibleColumns] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
@@ -105,6 +109,12 @@ export function ClientsTable({
 
     return ALL_COLUMNS.filter((c) => c.mandatory).map((c) => c.key);
   });
+  const [columnOrder, setColumnOrder] = useState<string[]>(() => {
+    const saved = localStorage.getItem("clients_table_column_order");
+    if (saved) return JSON.parse(saved);
+    return ALL_COLUMNS.map((c) => c.key);
+  });
+
   const isCustomized =
     visibleColumns.length !== DEFAULT_COLUMNS.length ||
     !DEFAULT_COLUMNS.every((col) => visibleColumns.includes(col));
@@ -121,6 +131,10 @@ export function ClientsTable({
     window.addEventListener("resize", calculateRows);
     return () => window.removeEventListener("resize", calculateRows);
   }, []);
+
+  const orderedVisibleColumns = useMemo(() => {
+    return columnOrder.filter((key) => visibleColumns.includes(key));
+  }, [columnOrder, visibleColumns]);
 
   const filteredClients = clients.filter((client) => {
     // Advanced Filter (from header filter modal)
@@ -395,7 +409,7 @@ export function ClientsTable({
           >
             <div
               className={cn(
-                "cursor-pointer border px-2 py-1 rounded transition",
+                "cursor-pointer border px-3 py-1 font-bold rounded-xl transition",
                 isCustomized
                   ? "bg-[#A7E55C] text-black border-[#7fc241]"
                   : "hover:bg-gray-200 border-gray-600",
@@ -423,95 +437,48 @@ export function ClientsTable({
                       }}
                     />
                   </th>
-                  {visibleColumns.includes("id") && (
-                    <SortableHeader
-                      label="Client ID"
-                      sKey="id"
-                      currentSortKey={sortKey}
-                      currentSortOrder={sortOrder}
-                      onSort={(k, o) => {
-                        setSortKey(k);
-                        setSortOrder(o);
-                      }}
-                    />
-                  )}
-                  {visibleColumns.includes("name") && (
-                    <SortableHeader
-                      label="Name"
-                      sKey="name"
-                      currentSortKey={sortKey}
-                      currentSortOrder={sortOrder}
-                      onSort={(k, o) => {
-                        setSortKey(k);
-                        setSortOrder(o);
-                      }}
-                    />
-                  )}
-                  {visibleColumns.includes("status") && (
-                    <th className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider">
-                      Status
-                    </th>
-                  )}
-                  {visibleColumns.includes("riskScore") && (
-                    <th className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider">
-                      Risk Score
-                    </th>
-                  )}
-                  {visibleColumns.includes("riskCategory") && (
-                    <th className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider">
-                      Category{" "}
-                    </th>
-                  )}
-                  {visibleColumns.includes("email") && (
-                    <th className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider">
-                      Email Address
-                    </th>
-                  )}
-                  {visibleColumns.includes("phone") && (
-                    <th className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider">
-                      Phone Number
-                    </th>
-                  )}
-                  {visibleColumns.includes("dob") && (
-                    <th className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider">
-                      Date Of Birth
-                    </th>
-                  )}
-                  {visibleColumns.includes("gender") && (
-                    <th className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider">
-                      Gender
-                    </th>
-                  )}
-                  {visibleColumns.includes("lastlogin") && (
-                    <th className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider">
-                      Last Login
-                    </th>
-                  )}
-                  {visibleColumns.includes("lastcall") && (
-                    <th className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider">
-                      Last Call
-                    </th>
-                  )}
-                  {visibleColumns.includes("city") && (
-                    <th className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider">
-                      City
-                    </th>
-                  )}
-                  {visibleColumns.includes("state") && (
-                    <th className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider">
-                      State
-                    </th>
-                  )}
-                  {visibleColumns.includes("kycvalidated") && (
-                    <th className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider">
-                      KYC Validated
-                    </th>
-                  )}
-                  {visibleColumns.includes("actions") && (
-                    <th className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider">
-                      Actions
-                    </th>
-                  )}
+                  {orderedVisibleColumns.map((colKey) => {
+                    if (colKey === "id") {
+                      return (
+                        <SortableHeader
+                          key="id"
+                          label="Client ID"
+                          sKey="id"
+                          currentSortKey={sortKey}
+                          currentSortOrder={sortOrder}
+                          onSort={(k, o) => {
+                            setSortKey(k);
+                            setSortOrder(o);
+                          }}
+                        />
+                      );
+                    }
+                    if (colKey === "name") {
+                      return (
+                        <SortableHeader
+                          key="name"
+                          label="Name"
+                          sKey="name"
+                          currentSortKey={sortKey}
+                          currentSortOrder={sortOrder}
+                          onSort={(k, o) => {
+                            setSortKey(k);
+                            setSortOrder(o);
+                          }}
+                        />
+                      );
+                    }
+
+                    const colDef = ALL_COLUMNS.find((c) => c.key === colKey);
+                    return (
+                      <th
+                        key={colKey}
+                        className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider"
+                      >
+                        {colDef?.label}
+                      </th>
+                    );
+                  })}
                 </tr>
               </thead>
 
@@ -520,7 +487,7 @@ export function ClientsTable({
                   Array.from({ length: rowsPerPage }).map((_, i) => (
                     <ClientRowSkeleton
                       key={i}
-                      visibleColumns={visibleColumns}
+                      visibleColumns={orderedVisibleColumns}
                     />
                   ))
                 ) : sortedClients.length === 0 ? (
@@ -560,136 +527,26 @@ export function ClientsTable({
                         index === paginatedClients.length - 1 && "border-0",
                       )}
                     >
-                      <td className="px-4 py-3">
-                        <Checkbox
-                          checked={selectedIds.includes(client.id)}
-                          className="cursor-pointer"
-                          onCheckedChange={(checked) => {
-                            setSelectedIds((prev) =>
-                              checked
-                                ? [...prev, client.id]
-                                : prev.filter((id) => id !== client.id),
-                            );
-                          }}
-                        />
-                      </td>
-                      {visibleColumns.includes("id") && (
-                        <td className="px-4 py-3 text-sm text-[#101828]">
-                          {client.id}
-                        </td>
-                      )}
-                      {visibleColumns.includes("name") && (
-                        <td className="px-4 py-3 text-sm text-[#101828]">
-                          {client.name}
-                        </td>
-                      )}
-                      {visibleColumns.includes("status") && (
+                      <div className="contents">
                         <td className="px-4 py-3">
-                          <span
-                            className={cn(
-                              "inline-flex items-center px-3 py-1 rounded-md text-xs font-medium border",
-                              statusColors[client.status],
-                            )}
-                          >
-                            {client.status}
-                          </span>
+                          <Checkbox
+                            checked={selectedIds.includes(client.id)}
+                            className="cursor-pointer"
+                            onCheckedChange={(checked) => {
+                              setSelectedIds((prev) =>
+                                checked
+                                  ? [...prev, client.id]
+                                  : prev.filter((id) => id !== client.id),
+                              );
+                            }}
+                          />
                         </td>
-                      )}
-                      {visibleColumns.includes("riskScore") && (
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-3">
-                            <span className="text-sm border rounded-md px-2">
-                              {client.riskScore}
-                            </span>
+                        {orderedVisibleColumns.map((colKey) => (
+                          <div key={colKey} className="contents">
+                            {renderCellContent(client, colKey)}
                           </div>
-                        </td>
-                      )}
-                      {visibleColumns.includes("riskCategory") && (
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-3">
-                            <span className="text-sm border rounded-md px-2">
-                              {client.riskCategory}
-                            </span>
-                          </div>
-                        </td>
-                      )}
-                      {visibleColumns.includes("email") && (
-                        <td className="px-4 py-3 text-sm text-[#475467]">
-                          {client.email}
-                        </td>
-                      )}
-                      {visibleColumns.includes("phone") && (
-                        <td className="py-3 text-md text-[#475467]">
-                          {client.phone}
-                        </td>
-                      )}
-                      {visibleColumns.includes("dob") && (
-                        <td className="px-4 py-3 text-sm text-[#475467]">
-                          {client.dob}
-                        </td>
-                      )}
-                      {visibleColumns.includes("gender") && (
-                        <td className="px-4 py-3 text-sm text-[#475467]">
-                          {client.gender}
-                        </td>
-                      )}
-                      {visibleColumns.includes("lastlogin") && (
-                        <td className="px-4 py-3 text-sm text-[#475467]">
-                          {client.lastlogin}
-                        </td>
-                      )}
-                      {visibleColumns.includes("lastcall") && (
-                        <td className="px-4 py-3 text-sm text-[#475467]">
-                          {client.lastcall}
-                        </td>
-                      )}
-                      {visibleColumns.includes("city") && (
-                        <td className="px-4 py-3 text-sm text-[#475467]">
-                          {client.city}
-                        </td>
-                      )}
-                      {visibleColumns.includes("state") && (
-                        <td className="px-4 py-3 text-sm text-[#475467]">
-                          {client.state}
-                        </td>
-                      )}
-                      {visibleColumns.includes("kycvalidated") && (
-                        <td className="px-4 py-3 text-sm text-[#475467]">
-                          {client.kycvalidated}
-                        </td>
-                      )}
-                      {visibleColumns.includes("actions") && (
-                        <td className="px-4 py-3">
-                          <Button variant="ghost" size="icon">
-                            <Link
-                              href={`/client-profile/${client.id}`}
-                              className="flex items-center gap-2"
-                            >
-                              {/* View text (hidden by default) */}
-                              <span
-                                className="
-                           text-[14px] text-[#535353]
-       opacity-0 tr  anslate-x-2
-        group-hover:opacity-100 group-hover:translate-x-0
-      transition-all duration-200
-      whitespace-nowrap
-    "
-                              >
-                                View
-                              </span>
-
-                              {/* Arrow (always visible, slight move on hover) */}
-                              <ArrowRight
-                                className="
-      h-4 w-4
-      transition-transform duration-200
-      group-hover:translate-x-1
-    "
-                              />
-                            </Link>
-                          </Button>
-                        </td>
-                      )}
+                        ))}
+                      </div>
                     </tr>
                   ))
                 )}
@@ -766,51 +623,87 @@ export function ClientsTable({
           </div>
         </div>
       )}
+      <AnimatePresence>
       {showCustomize && (
-        <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center">
-          <div className="bg-white w-[520px] rounded-2xl p-6 shadow-xl">
-  {/* //       <div className="fixed inset-0 z-50 bg-black/30 flex justify-end">
-  // <div className="bg-white w-[30vw] rounded-2xl p-6 shadow-xl"> */}
-
+       <motion.div
+      
+      className="fixed inset-0 z-50 flex justify-end"
+    >
+          <motion.div
+        initial={{ x: 400 }}
+        animate={{ x: 0 }}
+        exit={{ x: 400 }}
+        transition={{ duration: 0.40, ease: "easeOut" }}
+        className="bg-white w-[23vw] max-h-screen rounded-2xl p-6 shadow-xl">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-lg font-semibold">Table customization</h2>
+                <h2 className="text-lg font-bold">Table customization</h2>
                 <p className="text-sm text-[#667085]">
                   A minimum of 8 columns must be visible
                 </p>
               </div>
-              <button onClick={() => setShowCustomize(false)}>✕</button>
+              <button className="cursor-pointer" onClick={() => setShowCustomize(false)}>✕</button>
             </div>
 
-            <div className="grid grid-cols-3 gap-6 max-h-[350px] border-y py-6 overflow-y-auto">
-              {ALL_COLUMNS.map((col) => {
-                const checked = visibleColumns.includes(col.key);
-                const disabled = col.mandatory;
+            <div className="flex flex-col justify-between h-[86vh] border-t prb-2 py-4 overflow-y-auto">
+              <DndContext
+                collisionDetection={closestCenter}
+                onDragStart={(event) => {
+                  setActiveId(event.active.id as string);
+                }}
+                onDragEnd={(event) => {
+                  const { active, over } = event;
+                  setActiveId(null);
+                  if (!over || active.id === over.id) return;
 
-                return (
-                  <label
-                    key={col.key}
-                    className="flex items-center gap-2 text-sm"
-                  >
-                    <Checkbox
-                      checked={checked}
-                      disabled={disabled}
-                      onCheckedChange={(v) => {
-                        if (!v && visibleColumns.length <= 7) return;
-                        setVisibleColumns((prev) =>
-                          v
-                            ? [...prev, col.key]
-                            : prev.filter((k) => k !== col.key),
-                        );
-                      }}
+                  setColumnOrder((items) => {
+                    const oldIndex = items.indexOf(active.id as string);
+                    const newIndex = items.indexOf(over.id as string);
+                    return arrayMove(items, oldIndex, newIndex);
+                  });
+                }}
+              >
+                <SortableContext
+                  items={columnOrder}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {columnOrder.map((key) => {
+                    const col = ALL_COLUMNS.find((c) => c.key === key)!;
+                    const checked = visibleColumns.includes(col.key);
+
+                    return (
+                      <SortableColumnRow
+                        key={col.key}
+                        column={col}
+                        checked={checked}
+                        disabled={col.mandatory ?? false}
+                        onToggle={(v) => {
+                          if (!v && visibleColumns.length <= 7) return;
+                          setVisibleColumns((prev) =>
+                            v
+                              ? [...prev, col.key]
+                              : prev.filter((k) => k !== col.key),
+                          );
+                        }}
+                      />
+                    );
+                  })}
+                </SortableContext>
+                <DragOverlay>
+                  {activeId ? (
+                    <ColumnRowContent
+                      column={ALL_COLUMNS.find((c) => c.key === activeId)!}
+                      checked={visibleColumns.includes(activeId)}
+                      disabled={
+                        ALL_COLUMNS.find((c) => c.key === activeId)
+                          ?.mandatory ?? false
+                      }
+                      onToggle={() => {}}
                     />
-                    {col.label}
-                  </label>
-                );
-              })}
-            </div>
-
-            <div className="flex justify-between mt-6">
+                  ) : null}
+                </DragOverlay>
+                
+            <div className="flex justify-between pt-5 border-t">
               <Button
                 className="cursor-pointer"
                 variant="outline"
@@ -820,18 +713,24 @@ export function ClientsTable({
                   );
 
                   setVisibleColumns(defaults);
+                  setColumnOrder(ALL_COLUMNS.map((c) => c.key));
                   localStorage.removeItem(STORAGE_KEY);
+                  localStorage.removeItem("clients_table_column_order");
                 }}
               >
                 Reset
               </Button>
 
               <Button
-                className="bg-[#A7E55C] text-black hover:bg-[#A7E55C] hover:scale-[1.03] cursor-pointer"
+                className="bg-[#A7E55C] text-black hover:bg-[#A7E55C] cursor-pointer"
                 onClick={() => {
                   localStorage.setItem(
                     STORAGE_KEY,
                     JSON.stringify(visibleColumns),
+                  );
+                  localStorage.setItem(
+                    "clients_table_column_order",
+                    JSON.stringify(columnOrder),
                   );
                   setShowCustomize(false);
                 }}
@@ -839,9 +738,13 @@ export function ClientsTable({
                 Apply
               </Button>
             </div>
-          </div>
-        </div>
+              </DndContext>
+            </div>
+
+          </motion.div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </motion.div>
   );
 }
@@ -1019,4 +922,186 @@ function ClientRowSkeleton({ visibleColumns }: { visibleColumns: string[] }) {
       )}
     </tr>
   );
+}
+
+function SortableColumnRow({
+  column,
+  checked,
+  disabled,
+  onToggle,
+}: {
+  column: any;
+  checked: boolean;
+  disabled: boolean;
+  onToggle: (v: boolean) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: column.key });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.3 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      <ColumnRowContent
+        column={column}
+        checked={checked}
+        disabled={disabled}
+        onToggle={onToggle}
+        dragHandleProps={{ ...attributes, ...listeners }}
+      />
+    </div>
+  );
+}
+
+function ColumnRowContent({
+  column,
+  checked,
+  disabled,
+  onToggle,
+  dragHandleProps,
+}: {
+  column: any;
+  checked: boolean;
+  disabled: boolean;
+  onToggle: (v: boolean) => void;
+  dragHandleProps?: any;
+}) {
+  return (
+    <label className="flex items-center gap-3 text-sm bg-white p-1 rounded">
+      <span
+        {...dragHandleProps}
+        className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600"
+      >
+        <GripVertical className="h-4 w-4" />
+      </span>
+
+      <Checkbox
+        checked={checked}
+        disabled={disabled}
+        onCheckedChange={onToggle}
+      />
+
+      {column.label}
+    </label>
+  );
+}
+
+function renderCellContent(client: any, colKey: string) {
+  switch (colKey) {
+    case "id":
+      return <td className="px-4 py-3 text-sm text-[#101828]">{client.id}</td>;
+    case "name":
+      return (
+        <td className="px-4 py-3 text-sm text-[#101828]">{client.name}</td>
+      );
+    case "status":
+      return (
+        <td className="px-4 py-3">
+          <span
+            className={cn(
+              "inline-flex items-center px-3 py-1 rounded-md text-xs font-medium border",
+              statusColors[client.status],
+            )}
+          >
+            {client.status}
+          </span>
+        </td>
+      );
+    case "riskScore":
+      return (
+        <td className="px-4 py-3">
+          <div className="flex items-center gap-3">
+            <span className="text-sm border rounded-md px-2">
+              {client.riskScore}
+            </span>
+          </div>
+        </td>
+      );
+    case "riskCategory":
+      return (
+        <td className="px-4 py-3">
+          <div className="flex items-center gap-3">
+            <span className="text-sm border rounded-md px-2">
+              {client.riskCategory}
+            </span>
+          </div>
+        </td>
+      );
+    case "email":
+      return (
+        <td className="px-4 py-3 text-sm text-[#475467]">{client.email}</td>
+      );
+    case "phone":
+      return <td className="py-3 text-md text-[#475467]">{client.phone}</td>;
+    case "dob":
+      return <td className="px-4 py-3 text-sm text-[#475467]">{client.dob}</td>;
+    case "gender":
+      return (
+        <td className="px-4 py-3 text-sm text-[#475467]">{client.gender}</td>
+      );
+    case "lastlogin":
+      return (
+        <td className="px-4 py-3 text-sm text-[#475467]">{client.lastlogin}</td>
+      );
+    case "lastcall":
+      return (
+        <td className="px-4 py-3 text-sm text-[#475467]">{client.lastcall}</td>
+      );
+    case "city":
+      return (
+        <td className="px-4 py-3 text-sm text-[#475467]">{client.city}</td>
+      );
+    case "state":
+      return (
+        <td className="px-4 py-3 text-sm text-[#475467]">{client.state}</td>
+      );
+    case "kycvalidated":
+      return (
+        <td className="px-4 py-3 text-sm text-[#475467]">
+          {client.kycvalidated}
+        </td>
+      );
+    case "actions":
+      return (
+        <td className="px-6 py-3">
+          <Button variant="ghost" size="icon">
+            <Link
+              href={`/client-profile/${client.id}`}
+              className="flex items-center gap-2"
+            >
+              <span
+                className="
+                  text-[14px] text-[#535353]
+                  opacity-0 translate-x-2
+                  group-hover:opacity-100 group-hover:translate-x-0
+                  transition-all duration-200
+                  whitespace-nowrap
+                "
+              >
+                View
+              </span>
+              <ArrowRight
+                className="
+                  h-4 w-4
+                  transition-transform duration-200
+                  group-hover:translate-x-1
+                "
+              />
+            </Link>
+          </Button>
+        </td>
+      );
+    default:
+      return null;
+  }
 }
