@@ -416,7 +416,7 @@ export function ClientsTable({
           >
             <div
               className={cn(
-                "cursor-pointer border px-3 py-1 font-bold rounded-xl transition",
+                "cursor-pointer border px-3 py-1 text-sm font-bold rounded-sm transition",
                 isCustomized
                   ? "bg-[#A7E55C] text-black border-[#7fc241]"
                   : "hover:bg-gray-200 border-gray-600",
@@ -632,12 +632,18 @@ export function ClientsTable({
       
       className="fixed inset-0 z-50 flex justify-end"
     >
-          <motion.div
-        initial={{ x: 400 }}
-        animate={{ x: 0 }}
-        exit={{ x: 400 }}
-        transition={{ duration: 0.40, ease: "easeOut" }}
-        className="bg-white w-[23vw] max-h-screen rounded-2xl p-6 shadow-xl">
+        <motion.div
+          initial={{ x: "100%" }}
+          animate={{ x: 0 }}
+          exit={{ x: "100%" }}
+          transition={{
+            type: "tween",
+            ease: "easeInOut",
+            duration: 0.6,
+          }}
+          className="bg-white w-[23vw] max-h-screen rounded-2xl p-6 shadow-2xl h-full border-l"
+        >
+
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h2 className="text-lg font-bold">Table customization</h2>

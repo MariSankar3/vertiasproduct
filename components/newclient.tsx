@@ -344,7 +344,7 @@ function Step3MagicLink({ clientName }: { clientName: string }) {
              All compliance checks for RIA workflow are complete. Send the secure Magic Link to <span className="text-gray-900 font-medium">{displayClientName}</span> to initiate the client-side approval process.
            </p>
            
-           <button className="bg-[#a7e55c] hover:bg-[#96d649] text-[#121212] font-bold py-3 px-8 rounded-full transition transform hover:scale-105 active:scale-95 shadow-sm">
+           <button className="cursor-pointer bg-[#a7e55c] hover:bg-[#96d649] text-[#121212] font-bold py-3 px-8 rounded-full transition transform hover:scale-102 active:scale-100 shadow-sm">
              Send Magic Link
            </button>
         </div>
