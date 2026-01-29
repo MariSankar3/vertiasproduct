@@ -426,8 +426,32 @@ export function ClientsTable({
             </div>
           </button>
         </div>
-        <div className="bg-white rounded-2xl border border-[#eaecf0]  h-[calc(100vh-310px)] flex flex-col">
+        <div className="bg-white rounded-2xl border border-[#eaecf0] 
+                h-[calc(100vh-310px)] flex flex-col relative">
+
           <div className="overflow-x-auto">
+            {!loading && sortedClients.length === 0 && (
+  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+    <div className="flex flex-col items-center text-center">
+      <Image
+        src="/clientnofound.png"
+        alt="No clients found"
+        width={280}
+        height={280}
+        priority
+      />
+
+      <p className="mt-6 text-[24px] font-semibold text-[#121212]">
+        No clients found matching{" "}
+        <span className="text-[#121212]">"{searchQuery}"</span>
+      </p>
+
+      <p className="mt-2 text-[16px] text-[#667085]">
+        Try a different search term
+      </p>
+    </div>
+  </div>
+)}
             <table className="w-full min-w-max">
               <thead>
                 <tr className="border-b border-[#eaecf0] bg-[#F7F7F7]">
@@ -497,34 +521,6 @@ export function ClientsTable({
                       visibleColumns={orderedVisibleColumns}
                     />
                   ))
-                ) : sortedClients.length === 0 ? (
-                  <tr>
-                    <td colSpan={8} className="h-[50vh]">
-                      <div className="flex flex-col items-center justify-center h-full text-center font-nunito">
-                        {/* Image */}
-                        <Image
-                          src="/clientnofound.png"
-                          alt="No clients found"
-                          width={280}
-                          height={280}
-                          priority
-                        />
-
-                        {/* Main text */}
-                        <p className="mt-6 text-[24px] font-semibold text-[#121212]">
-                          No clients found matching{" "}
-                          <span className="text-[#121212]">
-                            "{searchQuery}"
-                          </span>
-                        </p>
-
-                        {/* Sub text */}
-                        <p className="mt-2 text-[16px] text-[#667085]">
-                          Try a different search term
-                        </p>
-                      </div>
-                    </td>
-                  </tr>
                 ) : (
                   paginatedClients.map((client, index) => (
                     <tr
