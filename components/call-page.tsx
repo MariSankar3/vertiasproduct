@@ -132,7 +132,7 @@ export function CallPage({
   ]);
   useEffect(() => {
     try {
-      const stored = localStorage.getItem("navHistory");
+      const stored = sessionStorage.getItem("navHistory");
       let history: ActivePage[] = stored
         ? JSON.parse(stored)
         : ["clients", "log", "calls", "dashboard"];
@@ -149,8 +149,8 @@ export function CallPage({
       history = history.filter((k) => k !== active);
       history.push(active);
 
-      // Save back to localStorage
-      localStorage.setItem("navHistory", JSON.stringify(history));
+      // Save back to sessionStorage
+      sessionStorage.setItem("navHistory", JSON.stringify(history));
 
       // Update state
       setSortedKeys(history);
