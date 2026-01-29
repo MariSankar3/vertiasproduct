@@ -95,25 +95,32 @@ export function ClientsTable({
   const [showCustomize, setShowCustomize] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  const [visibleColumns, setVisibleColumns] = useState<string[]>(() => {
-    if (typeof window === "undefined") return [];
+  // SSR-safe initialization
+  const [visibleColumns, setVisibleColumns] = useState<string[]>(DEFAULT_COLUMNS);
+  const [columnOrder, setColumnOrder] = useState<string[]>(ALL_COLUMNS.map((c) => c.key));
 
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        return ALL_COLUMNS.filter((c) => c.mandatory).map((c) => c.key);
+  useEffect(() => {
+    // Load saved settings from localStorage on client mount
+    if (typeof window !== "undefined") {
+      const savedVisible = localStorage.getItem(STORAGE_KEY);
+      if (savedVisible) {
+        try {
+          setVisibleColumns(JSON.parse(savedVisible));
+        } catch (e) {
+          console.error("Failed to parse saved columns", e);
+        }
+      }
+
+      const savedOrder = localStorage.getItem("clients_table_column_order");
+      if (savedOrder) {
+        try {
+          setColumnOrder(JSON.parse(savedOrder));
+        } catch (e) {
+          console.error("Failed to parse column order", e);
+        }
       }
     }
-
-    return ALL_COLUMNS.filter((c) => c.mandatory).map((c) => c.key);
-  });
-  const [columnOrder, setColumnOrder] = useState<string[]>(() => {
-    const saved = localStorage.getItem("clients_table_column_order");
-    if (saved) return JSON.parse(saved);
-    return ALL_COLUMNS.map((c) => c.key);
-  });
+  }, []);
 
   const isCustomized =
     visibleColumns.length !== DEFAULT_COLUMNS.length ||
