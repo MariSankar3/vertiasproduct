@@ -1079,7 +1079,7 @@ function ColumnRowContent({
 function renderCellContent(client: any, colKey: string) {
   switch (colKey) {
     case "id":
-      return <td className="px-4 py-5.5 text-sm text-[#101828]">{client.id}</td>;
+      return <td className="px-4 py-5.1 text-sm text-[#101828]">{client.id}</td>;
     case "name":
       return (
         <td className="px-4 py-3 text-sm text-[#101828]">{client.name}</td>
