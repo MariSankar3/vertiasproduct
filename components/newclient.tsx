@@ -43,9 +43,11 @@ export function NewClient() {
     riaAgreement: false,
   });
 
-  const handleNext = () => {
-    if (currentStep < 3) setCurrentStep((p) => p + 1);
-  };
+ const handleNext = () => {
+  if (currentStep === 1 && !isStep1Valid) return; // 🚫 block
+  if (currentStep < 3) setCurrentStep((p) => p + 1);
+};
+
 
   const handleBack = () => {
     if (currentStep > 1) {
@@ -54,12 +56,23 @@ export function NewClient() {
       router.back();
     }
   };
+  const isStep1Valid =
+  form.firstName.trim() !== "" &&
+  form.lastName.trim() !== "" &&
+  panRegex.test(form.pan) &&
+  gmailRegex.test(form.email) &&
+  mobileRegex.test(form.mobile) &&
+  !!form.dob &&
+  !errors.pan &&
+  !errors.email &&
+  !errors.mobile;
+
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
+      initial={{ opacity: 0, y: 0 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
       className=" bg-[#f7f7f7] px-4 pb-10"
     >
       {/* HEADER */}
@@ -77,20 +90,24 @@ export function NewClient() {
 
         {/* STEPPER aligned to center */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          <Stepper currentStep={currentStep} />
+         <Stepper currentStep={currentStep} onStepChange={setCurrentStep} />
         </div>
 
         <button
-          onClick={handleNext}
-          className={cn(
-            "px-10 py-2 rounded-full font-semibold transition",
-            currentStep === 3
-              ? "bg-[#dcfcc3] text-black/40 cursor-default" // Disabled look for step 3 header button
-              : "bg-lime-300 text-black hover:bg-[#ccf7a7] cursor-pointer"
-          )}
-        >
-          {currentStep === 3 ? "Next" : "Next"}
-        </button>
+  onClick={handleNext}
+  disabled={currentStep === 1 && !isStep1Valid}
+  className={cn(
+    "px-10 py-2 rounded-full font-semibold transition",
+    currentStep === 3
+      ? "bg-[#dcfcc3] text-black/40 cursor-default"
+      : currentStep === 1 && !isStep1Valid
+      ? "bg-lime-300/50 text-black/50 cursor-not-allowed"
+      : "bg-lime-300 text-black cursor-pointer hover:bg-lime-400"
+  )}
+>
+  Next
+</button>
+
       </div>
 
       {/* CONTENT AREA */}
@@ -131,12 +148,12 @@ function Step1Form({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
+      initial={{ opacity: 0, x: 5 }}
       animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
+      exit={{ opacity: 0, x: -5 }}
       className="w-full"
     >
-      <p className="text-2xl font-semibold pb-8 uppercase text-[#475467]">Create Client</p>
+      <p className="text-2xl font-semibold pb-6 pt-4 uppercase text-black">Create Client</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
         <InputBox
@@ -166,7 +183,7 @@ function Step1Form({
             setForm({ ...form, pan: val });
             setErrors((prev: any) => ({
               ...prev,
-              pan: panRegex.test(val) ? undefined : "Invalid PAN format (ABCDE1234F)",
+              pan: panRegex.test(val) ? undefined : "Invalid PAN format<br/> Excepted : ABCDE1234F",
             }));
           }}
         />
@@ -189,7 +206,7 @@ function Step1Form({
 
         <InputBox
           label="Mobile Number"
-          placeholder="9876543210"
+          placeholder="xxxxx xxxxx"
           value={form.mobile}
           required
           error={errors.mobile}
@@ -224,13 +241,13 @@ function Step2Compliance({ state, setState }: { state: any; setState: any }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
+      initial={{ opacity: 0, x: 5 }}
       animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
+      exit={{ opacity: 0, x: -5 }}
       className="w-full"
     >
       <div className="flex items-center justify-between pb-8">
-         <p className="text-2xl font-semibold uppercase text-[#475467]">Compliance Prerequisites</p>
+         <p className="text-2xl pt-4 font-semibold uppercase text-black">Compliance Prerequisites</p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
@@ -296,7 +313,7 @@ function ComplianceItem({
       onClick={onChange}
       className={cn(
         "flex items-center justify-between p-4 rounded-xl border bg-white cursor-pointer transition select-none h-[72px]",
-        checked ? "border-[#A7E55C] bg-[#fafff5]" : "border-[#e0e0e0] hover:border-[#A7E55C]"
+        checked ? "border-[#A7E55C] bg-[#fafff5]" : "border-gray-400 hover:border-[#A7E55C]"
       )}
     >
       <div className="flex items-center gap-3">
@@ -306,7 +323,7 @@ function ComplianceItem({
         )}>
            {checked && <div className="w-2.5 h-2.5 bg-[#66c61c] rounded-full" />}
         </div>
-        <span className={cn("font-semibold text-sm", checked ? "text-gray-900" : "text-gray-500")}>
+        <span className={cn("font-semibold text-sm", checked ? "text-black" : "text-gray-800")}>
           {label}
         </span>
       </div>
@@ -330,21 +347,22 @@ function Step3MagicLink({ clientName }: { clientName: string }) {
       animate={{ opacity: 1, y: 0 }}
       className="w-full flex items-center justify-center pt-20"
     >
-        <div className="bg-white rounded-3xl p-12 shadow-sm border border-gray-200 flex flex-col items-center text-center max-w-xl w-full">
+        <div className="bg-white rounded-3xl p-10 border border-gray-200 flex flex-col items-center text-center max-w-xl w-full">
            {/* Icon Circle */}
            <div className="w-20 h-20 rounded-full border-2 border-gray-800 flex items-center justify-center mb-6">
-              <Send className="w-8 h-8 text-gray-800 ml-1" />{/* ml-1 to visually center the paper plane properly */}
+              <Send className="w-8 h-8 text-gray-800 mt-0.5 mr-0.5" />
            </div>
            
-           <h2 className="text-xl font-bold text-[#121212] uppercase mb-4 tracking-wide">
+           <h2 className="text-xl font-bold text-[#121212] uppercase mb-2 tracking-wide">
              Ready to Onboard Client
            </h2>
            
-           <p className="text-gray-500 text-sm leading-relaxed mb-8 max-w-md">
-             All compliance checks for RIA workflow are complete. Send the secure Magic Link to <span className="text-gray-900 font-medium">{displayClientName}</span> to initiate the client-side approval process.
+           <p className="text-[#888888] text-sm leading-relaxed mb-8 max-w-[85%]">
+             {/* All compliance checks for RIA workflow are complete. Send the secure Magic Link to <span className="text-gray-900 font-medium">{displayClientName}</span> to initiate the client-side approval process. */}
+               All compliance checks for RIA workflow are complete. Send the secure Magic Link to {displayClientName} to initiate the client-side approval process.
            </p>
            
-           <button className="cursor-pointer bg-[#a7e55c] hover:bg-[#96d649] text-[#121212] font-bold py-3 px-8 rounded-full transition transform hover:scale-102 active:scale-100 shadow-sm">
+           <button className="cursor-pointer bg-[#a7e55c] hover:bg-[#96d649] text-[#121212] font-bold py-3 px-6 rounded-full transition transform hover:scale-102 active:scale-100 shadow-sm">
              Send Magic Link
            </button>
         </div>
@@ -353,7 +371,14 @@ function Step3MagicLink({ clientName }: { clientName: string }) {
 }
 
 /* ---------------- STEPPER COMPONENT ---------------- */
-function Stepper({ currentStep }: { currentStep: number }) {
+
+export default function Stepper({
+  currentStep,
+  onStepChange,
+}: {
+  currentStep: number;
+  onStepChange: (step: number) => void;
+}) {
   const steps = [
     { id: 1, label: "Create" },
     { id: 2, label: "Compliance" },
@@ -361,43 +386,63 @@ function Stepper({ currentStep }: { currentStep: number }) {
   ];
 
   return (
-    <div className="flex items-center gap-2 md:gap-4">
+    <div className="flex items-start justify-center">
       {steps.map((step, idx) => {
-        const isActive = step.id === currentStep;
         const isCompleted = step.id < currentStep;
+        const isActive = step.id === currentStep;
+        const isClickable = step.id <= currentStep;
 
         return (
-          <div key={step.id} className="flex items-center">
-            {/* Circle & Label */}
-            <div className="flex flex-col items-center">
-               <div className={cn(
-                  "w-7 h-7 rounded-full flex items-center justify-center border-2 transition-all",
-                  isActive ? "bg-black border-black scale-110" : 
-                  isCompleted ? "bg-gray-400 border-gray-400" : "bg-white border-gray-300"
-               )}>
-                  {isCompleted && <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />}
-                  {isActive && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
-               </div>
-               <span className={cn(
-                 "text-[10px] uppercase font-bold tracking-wider absolute top-12 w-20 text-center transition-colors",
-                 isActive ? "text-black" : isCompleted ? "text-gray-500" : "text-gray-300"
-               )}>
-                 {step.label}
-               </span>
+          <div key={step.id} className="flex items-start">
+            {/* Step Circle & Label Container */}
+            <div className="flex flex-col items-center w-9 relative">
+              {/* Circle (CLICKABLE) */}
+              <button
+                type="button"
+                disabled={!isClickable}
+                onClick={() => onStepChange(step.id)}
+                className={cn(
+                  "w-9 h-9 rounded-full flex items-center justify-center transition-all shrink-0 z-10",
+                  isCompleted && "bg-[#4D4D4D] cursor-pointer", // Match the dark grey from your image
+                  isActive && "border-[3px] border-black cursor-pointer bg-white",
+                  !isCompleted && !isActive && "border-[2px] border-[#D1D5DB] bg-white",
+                  !isClickable && "cursor-not-allowed"
+                )}
+              >
+                {isCompleted && (
+                  <Check className="w-4 h-4 text-white" strokeWidth={4} />
+                )}
+                {isActive && (
+                  <div className="w-2.5 h-2.5 bg-black rounded-full" />
+                )}
+              </button>
+
+              {/* Label (Positioned absolutely to avoid pushing the line) */}
+              <div className="absolute top-12 whitespace-nowrap">
+                 <button
+                    type="button"
+                    disabled={!isClickable}
+                    onClick={() => onStepChange(step.id)}
+                    className={cn(
+                      "text-[14px] font-medium transition",
+                      isActive ? "text-black" : "text-[#9CA3AF]",
+                      isClickable ? "cursor-pointer" : "cursor-not-allowed"
+                    )}
+                  >
+                    {step.label}
+                  </button>
+              </div>
             </div>
 
-            {/* Connecting Line */}
+            {/* Connecting line */}
             {idx < steps.length - 1 && (
-              <div className="w-16 h-[2px] bg-gray-200 mx-2 relative translate-y-[-8px]">
-                <div 
-                   className="absolute left-0 top-0 h-full bg-gray-400 transition-all duration-500"
-                   style={{ width: isCompleted ? "100%" : "0%" }}
-                />
-              </div>
+              <div
+                className={cn(
+                  "w-24 h-[2px] mt-[18px] transition-colors", // h-[2px] and mt calculation for perfect center
+                  step.id < currentStep ? "bg-[#4D4D4D]" : "bg-[#D1D5DB]"
+                )}
+              />
             )}
-            
-            {/* Spacing for absolute labels */}
-            <div className="w-4"></div>
           </div>
         );
       })}
@@ -430,7 +475,7 @@ function InputBox({
           error ? "border-red-500" : "border-gray-400 focus-within:border-black"
         )}
       >
-        <label className="text-xs font-medium text-gray-500 flex justify-between tracking-wide">
+        <label className="text-[14px] font-medium text-gray-500 flex justify-between tracking-wide">
           <span>
             {label}
             {required && <span className="text-red-500 ml-0.5">*</span>}
@@ -443,7 +488,7 @@ function InputBox({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className="w-full mt-2 font-semibold text-lg text-gray-900 focus:outline-none placeholder:text-gray-300"
+          className="w-full text-sm mt-2 font-semibold text-lg text-gray-900 focus:outline-none placeholder:text-gray-300"
         />
       </div>
     </div>
@@ -513,8 +558,8 @@ function DatePickerBox({
 
   return (
     <div ref={ref} className="relative w-full">
-      <div className="w-full border border-gray-400 hover:shadow-sm rounded-2xl px-6 py-4 bg-white focus-within:border-black transition">
-        <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+      <div className="w-full border border-gray-400 hover:shadow-sm rounded-2xl px-6 py-3.5 bg-white focus-within:border-black transition">
+        <label className="text-xs font-medium text-gray-500  tracking-wide">
           {label}
           {required && <span className="text-red-500 ml-0.5">*</span>}
         </label>
@@ -526,7 +571,7 @@ function DatePickerBox({
             onChange={(e) => handleInputChange(e.target.value)}
             placeholder="DD / MM / YYYY"
             maxLength={14}
-            className="w-full font-semibold text-lg text-gray-900 focus:outline-none placeholder:text-gray-300"
+            className="text-sm w-full font-semibold text-lg text-gray-900 focus:outline-none placeholder:text-gray-300"
           />
           <Calendar
             className="h-5 w-5 text-gray-400 cursor-pointer hover:text-black transition"

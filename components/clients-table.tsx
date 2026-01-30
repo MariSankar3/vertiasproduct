@@ -42,8 +42,29 @@ const statusColors: Record<string, string> = {
   "Risk Profile": "bg-[#fdf2fa] text-[#c11574] border-[#fcceee]",
   Inactive: "bg-[#fef3f2] text-[#b42318] border-[#fecdca]",
 };
-type SortKey = "id" | "name" | null;
+
+// Helper for date parsing (DD/MM/YYYY)
+const parseDate = (dateStr: string) => {
+  if (!dateStr) return 0;
+  const [day, month, year] = dateStr.split("/").map(Number);
+  return new Date(year, month - 1, day).getTime();
+};
+
+type SortKey =
+  | "id"
+  | "name"
+  | "riskScore"
+  | "riskCategory"
+  | "email"
+  | "dob"
+  | "lastlogin"
+  | "lastcall"
+  | "city"
+  | "state"
+  | "status"
+  | null;
 type SortOrder = "asc" | "desc" | null;
+
 type ClientsTableProps = {
   searchQuery?: string;
   statusFilters?: string[];
@@ -175,8 +196,57 @@ export function ClientsTable({
   const sortedClients = [...filteredClients].sort((a, b) => {
     if (!sortKey || !sortOrder) return 0;
 
-    const aValue = sortKey === "id" ? a.id : a.name.toLowerCase();
-    const bValue = sortKey === "id" ? b.id : b.name.toLowerCase();
+    let aValue: any;
+    let bValue: any;
+
+    switch (sortKey) {
+      case "id":
+        aValue = a.id;
+        bValue = b.id;
+        break;
+      case "name":
+        aValue = a.name.toLowerCase();
+        bValue = b.name.toLowerCase();
+        break;
+      case "riskScore":
+        aValue = a.riskScore;
+        bValue = b.riskScore;
+        break;
+      case "riskCategory":
+        aValue = a.riskCategory.toLowerCase();
+        bValue = b.riskCategory.toLowerCase();
+        break;
+      case "email":
+        aValue = a.email.toLowerCase();
+        bValue = b.email.toLowerCase();
+        break;
+      case "dob":
+        aValue = parseDate(a.dob);
+        bValue = parseDate(b.dob);
+        break;
+      case "lastlogin":
+        aValue = parseDate(a.lastlogin);
+        bValue = parseDate(b.lastlogin);
+        break;
+      case "lastcall":
+        aValue = parseDate(a.lastcall);
+        bValue = parseDate(b.lastcall);
+        break;
+      case "city":
+        aValue = a.city?.toLowerCase() || "";
+        bValue = b.city?.toLowerCase() || "";
+        break;
+      case "state":
+        aValue = a.state?.toLowerCase() || "";
+        bValue = b.state?.toLowerCase() || "";
+        break;
+      case "status":
+        aValue = a.status.toLowerCase();
+        bValue = b.status.toLowerCase();
+        break;
+      default:
+        return 0;
+    }
 
     if (sortOrder === "asc") return aValue > bValue ? 1 : -1;
     if (sortOrder === "desc") return aValue < bValue ? 1 : -1;
@@ -469,38 +539,39 @@ export function ClientsTable({
                     />
                   </th>
                   {orderedVisibleColumns.map((colKey) => {
-                    if (colKey === "id") {
-                      return (
-                        <SortableHeader
-                          key="id"
-                          label="Client ID"
-                          sKey="id"
-                          currentSortKey={sortKey}
-                          currentSortOrder={sortOrder}
-                          onSort={(k, o) => {
-                            setSortKey(k);
-                            setSortOrder(o);
-                          }}
-                        />
-                      );
-                    }
-                    if (colKey === "name") {
-                      return (
-                        <SortableHeader
-                          key="name"
-                          label="Name"
-                          sKey="name"
-                          currentSortKey={sortKey}
-                          currentSortOrder={sortOrder}
-                          onSort={(k, o) => {
-                            setSortKey(k);
-                            setSortOrder(o);
-                          }}
-                        />
-                      );
-                    }
-
                     const colDef = ALL_COLUMNS.find((c) => c.key === colKey);
+                    
+                    // Check if column is sortable
+                    const isSortable = [
+                      "id",
+                      "name",
+                      "riskScore",
+                      "riskCategory",
+                      "email",
+                      "dob",
+                      "lastlogin",
+                      "lastcall",
+                      "city",
+                      "state",
+                      "status",
+                    ].includes(colKey);
+
+                    if (isSortable) {
+                        return (
+                          <SortableHeader
+                            key={colKey}
+                            label={colDef?.label || colKey}
+                            sKey={colKey as SortKey}
+                            currentSortKey={sortKey}
+                            currentSortOrder={sortOrder}
+                            onSort={(k, o) => {
+                              setSortKey(k);
+                              setSortOrder(o);
+                            }}
+                          />
+                        );
+                    }
+                    
                     return (
                       <th
                         key={colKey}
