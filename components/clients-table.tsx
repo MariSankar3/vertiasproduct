@@ -429,7 +429,7 @@ export function ClientsTable({
         <div className="bg-white rounded-2xl border border-[#eaecf0] 
                 h-[calc(100vh-310px)] flex flex-col relative">
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto scrollbar-x-thin">
             {!loading && sortedClients.length === 0 && (
   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
     <div className="flex flex-col items-center text-center">
@@ -633,7 +633,7 @@ export function ClientsTable({
       className="fixed inset-0 z-50 flex justify-end"
     >
         <motion.div
-          initial={{ x: "100%" }}
+          initial={{ x: "110%" }}
           animate={{ x: 0 }}
           exit={{ x: "100%" }}
           transition={{
@@ -1008,7 +1008,7 @@ function ColumnRowContent({
 function renderCellContent(client: any, colKey: string) {
   switch (colKey) {
     case "id":
-      return <td className="px-4 py-3 text-sm text-[#101828]">{client.id}</td>;
+      return <td className="px-4 py-5.5 text-sm text-[#101828]">{client.id}</td>;
     case "name":
       return (
         <td className="px-4 py-3 text-sm text-[#101828]">{client.name}</td>

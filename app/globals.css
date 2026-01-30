@@ -175,3 +175,26 @@ body {
   display: none;             /* Chrome, Safari */
 }
 
+/* Modern thin horizontal scrollbar */
+.scrollbar-x-thin {
+  scrollbar-width: thin;              /* Firefox */
+  scrollbar-color: #eeedede3 transparent;
+}
+
+/* WebKit (Chrome, Edge, Safari) */
+.scrollbar-x-thin::-webkit-scrollbar {
+  height: 6px;                         /* thin horizontal bar */
+}
+
+.scrollbar-x-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-x-thin::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;           /* light gray */
+  border-radius: 999px;
+}
+
+.scrollbar-x-thin::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;           /* slightly darker on hover */
+}
