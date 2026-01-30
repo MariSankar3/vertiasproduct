@@ -183,7 +183,7 @@ function Step1Form({
             setForm({ ...form, pan: val });
             setErrors((prev: any) => ({
               ...prev,
-              pan: panRegex.test(val) ? undefined : "Invalid PAN format<br/> Excepted : ABCDE1234F",
+              pan: panRegex.test(val) ? undefined : "Invalid PAN format Excepted : ABCDE1234F",
             }));
           }}
         />
@@ -257,6 +257,7 @@ function Step2Compliance({ state, setState }: { state: any; setState: any }) {
             label="KYC" 
             checked={state.kyc} 
             onChange={() => toggle("kyc")} 
+            disabled
           />
           <ComplianceItem 
             label="Risk profile" 
@@ -278,6 +279,7 @@ function Step2Compliance({ state, setState }: { state: any; setState: any }) {
             label="Client Identity Created" 
             checked={state.clientIdentity} 
             onChange={() => toggle("clientIdentity")} 
+            disabled
           />
           <ComplianceItem 
             label="Investment Objectives" 
@@ -302,19 +304,29 @@ function ComplianceItem({
   checked,
   onChange,
   hasEye = false,
+  disabled = false,
 }: {
   label: string;
   checked: boolean;
   onChange: () => void;
   hasEye?: boolean;
+  disabled?: boolean;
 }) {
+
   return (
     <div 
-      onClick={onChange}
-      className={cn(
-        "flex items-center justify-between p-4 rounded-xl border bg-white cursor-pointer transition select-none h-[72px]",
-        checked ? "border-[#A7E55C] bg-[#fafff5]" : "border-gray-400 hover:border-[#A7E55C]"
-      )}
+      onClick={() => {
+    if (!disabled) onChange();
+  }}
+     className={cn(
+  "flex items-center justify-between p-4 rounded-xl border bg-white transition select-none h-[72px]",
+  disabled
+    ? "cursor-not-allowed opacity-95"
+    : checked
+    ? "border-[#A7E55C] bg-[#fafff5] cursor-pointer"
+    : "border-gray-400 hover:border-[#A7E55C] cursor-pointer"
+)}
+
     >
       <div className="flex items-center gap-3">
         <div className={cn(
@@ -488,7 +500,7 @@ function InputBox({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className="w-full text-sm mt-2 font-semibold text-lg text-gray-900 focus:outline-none placeholder:text-gray-300"
+          className="w-full text-[16px] mt-2 font-semibold text-lg text-gray-900 focus:outline-none placeholder:text-gray-300"
         />
       </div>
     </div>

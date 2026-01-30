@@ -26,7 +26,6 @@ export default async function ActivityPage({ params }: PageProps) {
   name={clientData.name}
   phone={clientData.phone}
 />
-
       </main>
     </div>
   )
