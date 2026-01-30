@@ -92,7 +92,7 @@ export const callsData = [
     {
         id: "CLL007",
         call: "Short",
-        name: "BankNifty 48500 CE",
+        name: "BankNifty 48500",
         segment:"Options",
         version: "1",
         entryprice: 105.00,
@@ -152,7 +152,7 @@ export const callsData = [
     {
         id: "CLL011",
         call: "Short",
-        name: "Reliance Features FEB",
+        name: "Reliance Features",
         segment:"Futures",
         version: "3",
         entryprice: 132.00,
@@ -167,7 +167,7 @@ export const callsData = [
     {
         id: "CLL012",
         call: "Long",
-        name: "ICICI Bank Features FEB CE",
+        name: "ICICI Bank Features",
         segment:"Features",
         version: "1",
         entryprice: 96.00,

@@ -56,7 +56,7 @@ export function EditCall({ id }: EditCallProps) {
                     <Link href="/calls">
                         <button
                             type="button"
-                            className="h-10 w-10 rounded-full bg-white text-black flex items-center justify-center hover:bg-black hover:text-white transition cursor-pointer"
+                            className="h-10 w-10 rounded-full bg-white text-black flex items-center justify-center transition cursor-pointer hover:scale-[1.03]"
                             aria-label="Go to dashboard"
                         >
                             <ArrowLeft className="h-6 w-6" />

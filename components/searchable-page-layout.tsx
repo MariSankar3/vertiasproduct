@@ -71,7 +71,7 @@ export function SearchablePageLayout({
   const categoryOptions =
     active === "clients"
       ? ["Rathi", "AtiRathi", "MahaRathi"]
-      : ["Buy", "Sell"]
+      : ["Long", "Short"]
 
   const hasActiveFilter = statusFilters.length > 0 || categoryFilters.length > 0
 

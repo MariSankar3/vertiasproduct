@@ -198,3 +198,26 @@ body {
 .scrollbar-x-thin::-webkit-scrollbar-thumb:hover {
   background-color: #9ca3af;           /* slightly darker on hover */
 }
+
+.custom-daypicker {
+  --rdp-accent-color: #000000;
+  --rdp-accent-background-color: #B4E64E;
+  --rdp-nav-icon-color: #66c61c;
+  --rdp-day-focus-border: #000000;
+  --rdp-outline: none;
+}
+
+.custom-daypicker .rdp-day {
+  color: #000000;
+}
+
+.custom-daypicker .rdp-day_selected {
+  background-color: #B4E64E;
+  color: #000000;
+  font-weight: 700;
+}
+
+.custom-daypicker .rdp-day_today {
+  color: #66c61c;
+  font-weight: 700;
+}

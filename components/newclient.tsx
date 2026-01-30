@@ -524,7 +524,6 @@ function DatePickerBox({
 
   const displayDate = value ?? new Date();
 
-  // Sync input when calendar changes
   useEffect(() => {
     if (value) {
       setTextValue(format(value, "dd / MM / yyyy"));
@@ -576,7 +575,7 @@ function DatePickerBox({
           {required && <span className="text-red-500 ml-0.5">*</span>}
         </label>
 
-        <div className="flex items-center justify-between mt-2">
+        <div className="flex items-center justify-between mt-3.5">
           <input
             type="text"
             value={textValue}
@@ -598,7 +597,7 @@ function DatePickerBox({
             <div className="text-sm font-medium opacity-80">{format(displayDate, "yyyy")}</div>
             <div className="text-2xl font-bold">{format(displayDate, "EEE, MMM d")}</div>
           </div>
-          <div className="p-4">
+          <div className="p-4 custom-daypicker">
             <DayPicker
               mode="single"
               selected={value}
