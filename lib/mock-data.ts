@@ -167,7 +167,7 @@ export const callsData = [
     {
         id: "CLL012",
         call: "Long",
-        name: "ICICI Bank Features",
+        name: "ICICI Bank",
         segment:"Features",
         version: "1",
         entryprice: 96.00,

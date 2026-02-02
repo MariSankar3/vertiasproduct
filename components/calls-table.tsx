@@ -450,19 +450,48 @@ export function CallsTable({
                       setSortOrder(o);
                     }}
                   />
-                  <th className="text-left p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">
-                    Versions
-                  </th>
-                  <th className="text-left p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">
-                    Entry Price
-                  </th>
-                  <th className="text-left p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">
-                    Traget Price
-                  </th>
-                  <th className="text-left p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">
-                    Stop Loss
-                  </th>
-                  <th className="text-left p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">
+                  <SortableHeader
+                    label="Version"
+                    sKey="version"
+                    currentSortKey={sortKey}
+                    currentSortOrder={sortOrder}
+                    onSort={(k, o) => {
+                      setSortKey(k);
+                      setSortOrder(o);
+                    }}
+                  />
+                   <SortableHeader
+                    label="Entry Price"
+                    sKey="version"
+                    currentSortKey={sortKey}
+                    currentSortOrder={sortOrder}
+                    onSort={(k, o) => {
+                      setSortKey(k);
+                      setSortOrder(o);
+                    }}
+                  />
+                  <SortableHeader
+                    label="Target Price"
+                    sKey="targetprice"
+                    currentSortKey={sortKey}
+                    currentSortOrder={sortOrder}
+                    onSort={(k, o) => {
+                      setSortKey(k);
+                      setSortOrder(o);
+                    }}
+                  />
+                   <SortableHeader
+                    label="Stop Loss"
+                    sKey="stoploss"
+                    currentSortKey={sortKey}
+                    currentSortOrder={sortOrder}
+                    onSort={(k, o) => {
+                      setSortKey(k);
+                      setSortOrder(o);
+                    }}
+                  />
+                  
+                  <th className="text-left p-3 text-xs font-semibold text-[#667085] uppercase tracking-wider">
                     Risk Ratio
                   </th>
                   <SortableHeader
@@ -475,16 +504,26 @@ export function CallsTable({
                       setSortOrder(o);
                     }}
                   />
-                  <th className="text-left p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">
+                  <th className="text-left p-3 text-xs font-semibold text-[#667085] uppercase tracking-wider">
                     Validity
                   </th>
-                  <th className="text-left p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">
+                   <SortableHeader
+                    label="Shared"
+                    sKey="shared"
+                    currentSortKey={sortKey}
+                    currentSortOrder={sortOrder}
+                    onSort={(k, o) => {
+                      setSortKey(k);
+                      setSortOrder(o);
+                    }}
+                  />
+                  {/* <th className="text-left p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">
                     Shared
-                  </th>
-                  <th className="text-left p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">
+                  </th> */}
+                  <th className="text-left p-3 text-xs font-semibold text-[#667085] uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="text-left p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">
+                  <th className="text-left p-3 text-xs font-semibold text-[#667085] uppercase tracking-wider">
                     More
                   </th>
                 </tr>
@@ -523,58 +562,85 @@ export function CallsTable({
                 ) : (
                   paginatedClients.map((client, index) => (
                     <tr
-                      key={index}
-                      className={cn(
-                        "hover:bg-[#f9fafb] transition",
-                        index === paginatedClients.length - 1 && "border-0",
-                      )}
-                    >
-                      <td
-                        className={cn(
-                          "p-4 text-sm font-semibold",
-                          client.call === "Long" && "text-[#34C759]", // green
-                          client.call === "Short" && "text-[#FF3B30]", // red
-                        )}
-                      >
-                        {client.call}
-                      </td>
+  key={index}
+  className={cn(
+    "hover:bg-[#f9fafb] transition",
+    index === paginatedClients.length - 1 && "border-0"
+  )}
+>
+  <td
+    className={cn(
+      "p-4 text-sm font-semibold whitespace-nowrap",
+      client.call === "Long" && "text-[#34C759]",
+      client.call === "Short" && "text-[#FF3B30]"
+    )}
+  >
+    {client.call}
+  </td>
 
-                      <td className="p-4 text-sm font-medium text-[#101828]">
-                        {client.name}
-                      </td>
-                      <td className="p-4 text-sm">{client.segment}</td>
-                      <td className="p-4 text-sm font-medium text-[#101828]">
-                        {client.version}
-                      </td>
-                      <td className="p-4 text-sm">{client.entryprice}</td>
-                      <td className="p-4 text-sm">{client.targetprice}</td>
-                      <td className="p-4 text-sm">{client.stoploss}</td>
-                      <td className="p-4 text-sm">{client.riskratio}</td>
-                      <td className="p-4 text-sm">{client.timedate}</td>
-                      <td className="p-4 text-sm">{client.validity}</td>
-                      <td className="p-4 text-sm">{client.shared}</td>
-                      <td
-                        className={cn(
-                          "p-4 text-sm font-semibold",
-                          client.status === "Hit" && "text-[#34C759]", // green
-                          client.status === "Failed" && "text-[#FF3B30]", // red
-                          client.status == "Inactive" && "text-yellow-500", // red
-                        )}
-                      >
-                        {client.status}
-                      </td>
-                      <td className="p-4">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-[#667085] hover:text-[#101828] hover:bg-[#f9fafb]"
-                        >
-                          <Link href={`/editcall/${client.id}`}>
-                            <Edit className="h-4 w-4" />
-                          </Link>
-                        </Button>
-                      </td>
-                    </tr>
+  <td className="p-4 text-sm font-medium text-[#101828] whitespace-nowrap truncate max-w-[160px]">
+    {client.name}
+  </td>
+
+  <td className="p-4 text-sm whitespace-nowrap truncate max-w-[120px]">
+    {client.segment}
+  </td>
+
+  <td className="p-4 text-sm font-medium text-[#101828] whitespace-nowrap truncate max-w-[100px]">
+    {client.version}
+  </td>
+
+  <td className="p-4 text-sm whitespace-nowrap">
+    {client.entryprice}
+  </td>
+
+  <td className="p-4 text-sm whitespace-nowrap">
+    {client.targetprice}
+  </td>
+
+  <td className="p-4 text-sm whitespace-nowrap">
+    {client.stoploss}
+  </td>
+
+  <td className="p-4 text-sm whitespace-nowrap">
+    {client.riskratio}
+  </td>
+
+  <td className="text-sm whitespace-nowrap truncate ">
+    {client.timedate}
+  </td>
+
+  <td className="p-4 text-sm whitespace-nowrap truncate max-w-[120px]">
+    {client.validity}
+  </td>
+
+  <td className="p-4 text-sm whitespace-nowrap truncate max-w-[100px]">
+    {client.shared}
+  </td>
+
+  <td
+    className={cn(
+      "p-4 text-sm font-semibold whitespace-nowrap",
+      client.status === "Hit" && "text-[#34C759]",
+      client.status === "Failed" && "text-[#FF3B30]",
+      client.status === "Inactive" && "text-yellow-500"
+    )}
+  >
+    {client.status}
+  </td>
+
+  <td className="p-4 whitespace-nowrap">
+    <Button
+      variant="ghost"
+      size="icon"
+      className="h-8 w-8 text-[#667085] hover:text-[#101828] hover:bg-[#f9fafb]"
+    >
+      <Link href={`/editcall/${client.id}`}>
+        <Edit className="h-4 w-4" />
+      </Link>
+    </Button>
+  </td>
+</tr>
                   ))
                 )}
               </tbody>
@@ -682,8 +748,10 @@ function SortableHeader({
   const isSelected = currentSortKey === sKey;
 
   return (
-    <th className="p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">
-      <div className="flex items-center gap-1">
+   <th
+  className="p-2 py-4 text-left text-xs font-semibold text-[#667085] uppercase tracking-wider whitespace-nowrap"
+>
+  <div className="flex items-center gap-1 whitespace-nowrap">
         <span>{label}</span>
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>

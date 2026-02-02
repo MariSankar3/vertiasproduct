@@ -1,0 +1,34 @@
+[33m63fcaf5[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m gitdeleted
+[33ma6b7aac[m gitignoreissue
+[33mcec8f5e[m googleauth
+[33mf386c50[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m callsorting
+[33mabc1fa5[m disablestatefix
+[33mdee8135[m clienttablemirrorfix
+[33mf3ab52e[m newclientbugfix
+[33mc1cb647[m scrollbarfix
+[33md56c036[m sessionstorage
+[33mfd63804[m tablecustom
+[33mc6968a5[m noclienterror
+[33mfec1e7d[m clienterrorsolved
+[33mf909ccf[m tablecustomization-2
+[33ma23fd73[m tablecustomization-1
+[33m3f04db6[m billinganimation
+[33mfe55b8e[m messagefeature
+[33m937dc39[m notificationfeautre
+[33m6598975[m activitychange
+[33m4c44ba5[m clientprofilechanges
+[33m9e29ba3[m longshortcalltype
+[33mc8f9201[m dynamicid
+[33m886ccba[m clientandcalltableheightadjustement
+[33m46169a1[m viewaddedinclienttable
+[33m2348fa9[m callsskeletonloader
+[33m925accf[m siginpassword
+[33mddbfa52[m loadingpageandpagenationadded
+[33m6cfc8bb[m headerimagesize
+[33md8271ad[m afterpnpm
+[33m3fa77ac[m Remove Google auth and ignore env files
+[33m070004f[m e
+[33mec51e94[m envdeleted
+[33m1a44d8a[m envfileadded
+[33mc672122[m animationaddedcode
+[33m2dbe68f[m first commit

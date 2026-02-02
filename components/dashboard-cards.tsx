@@ -2,9 +2,7 @@
 
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { Button } from "./ui/button"
-import { Calendar, Download, Filter, Search, Users } from "lucide-react"
-import Link from "next/link"
+import { useSession } from "next-auth/react"
 
 interface DashboardCardProps {
   title: string
@@ -31,6 +29,8 @@ const itemVariants = {
 
 export function DashboardCards({
 }: DashboardCardProps) {
+   const { data: session, status } = useSession()
+   console.log(session)
   return (
 
 
@@ -40,7 +40,11 @@ export function DashboardCards({
       animate="visible"
       className="space-y-12"
     >
-      <h1 className="font-medium text-2xl mt-10 text-gray-800 font-bold">DASHBOARD</h1>
+      {/* <h1 className="font-medium text-2xl mt-10 text-gray-800 font-bold">DASHBOARD</h1> */}
+      <h1 className="font-medium text-2xl mt-10 text-gray-800 font-bold">
+  Hi {session?.user?.name ?? "User"} 👋
+</h1>
+
       <div className="flex gap-8 items-center">
         <div className="flex items-center gap-2">
           <p className="text-3xl font-semibold">231</p>

@@ -35,17 +35,26 @@ export function NewClient() {
 
   // Step 2 Compliance State
   const [complianceState, setComplianceState] = useState({
-    kyc: false,
-    clientIdentity: false,
+    kyc: true,
+    clientIdentity: true,
     riskProfile: false,
     investmentObjectives: false,
     adviceEligibility: false,
     riaAgreement: false,
   });
 
+  // Step 3 Eligibility State
+  const [eligibilityState, setEligibilityState] = useState({
+    intraday: { enabled: true, items: { equityCash: false, fno: false, commodity: false, mutualFunds: false, bonds: false } },
+    shortTerm: { enabled: false, items: { equityCash: false, fno: false, commodity: false, mutualFunds: false, bonds: false } },
+    positional: { enabled: false, items: { equityCash: false, fno: false, commodity: false, mutualFunds: false, bonds: false } },
+    longTerm: { enabled: true, items: { equityCash: false, fno: false, commodity: false, mutualFunds: false, bonds: false } },
+  });
+
  const handleNext = () => {
   if (currentStep === 1 && !isStep1Valid) return; // 🚫 block
-  if (currentStep < 3) setCurrentStep((p) => p + 1);
+  if (currentStep < 4) setCurrentStep((p) => p + 1);
+
 };
 
 
@@ -98,11 +107,11 @@ export function NewClient() {
   disabled={currentStep === 1 && !isStep1Valid}
   className={cn(
     "px-10 py-2 rounded-full font-semibold transition",
-    currentStep === 3
+    currentStep === 4
       ? "bg-[#dcfcc3] text-black/40 cursor-default"
       : currentStep === 1 && !isStep1Valid
-      ? "bg-lime-300/50 text-black/50 cursor-not-allowed"
-      : "bg-lime-300 text-black cursor-pointer hover:bg-lime-400"
+      ? "bg-[#A7E55C]/30 text-black/50 cursor-not-allowed"
+      : "bg-[#a7e55c] text-black cursor-pointer hover:bg-[#a7e55c]"
   )}
 >
   Next
@@ -127,7 +136,13 @@ export function NewClient() {
               setState={setComplianceState} 
             />
           )}
-          {currentStep === 3 && <Step3MagicLink clientName={`${form.firstName} ${form.lastName}`} />}
+          {currentStep === 3 && (
+            <Step3Eligibility
+              state={eligibilityState}
+              setState={setEligibilityState}
+            />
+          )}
+          {currentStep === 4 && <Step4MagicLink clientName={`${form.firstName} ${form.lastName}`} />}
         </div>
       </div>
     </motion.div>
@@ -252,48 +267,58 @@ function Step2Compliance({ state, setState }: { state: any; setState: any }) {
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
         {/* Left Column */}
-        <div className="space-y-6">
-          <ComplianceItem 
-            label="KYC" 
-            checked={state.kyc} 
-            onChange={() => toggle("kyc")} 
-            disabled
-          />
-          <ComplianceItem 
-            label="Risk profile" 
-            checked={state.riskProfile} 
-            onChange={() => toggle("riskProfile")} 
-            hasEye 
-          />
-          <ComplianceItem 
-            label="Advice Eligibility Configuration" 
-            checked={state.adviceEligibility} 
-            onChange={() => toggle("adviceEligibility")} 
-            hasEye 
-          />
-        </div>
+<div className="space-y-6">
+  <ComplianceItem 
+    label="KYC" 
+    checked={state.kyc} 
+    onChange={() => toggle("kyc")} 
+    disabled
+    mandatory
+  />
 
-        {/* Right Column */}
-        <div className="space-y-6">
-          <ComplianceItem 
-            label="Client Identity Created" 
-            checked={state.clientIdentity} 
-            onChange={() => toggle("clientIdentity")} 
-            disabled
-          />
-          <ComplianceItem 
-            label="Investment Objectives" 
-            checked={state.investmentObjectives} 
-            onChange={() => toggle("investmentObjectives")} 
-            hasEye 
-          />
-          <ComplianceItem 
-            label="RIA Agreement & MITC" 
-            checked={state.riaAgreement} 
-            onChange={() => toggle("riaAgreement")} 
-            hasEye 
-          />
-        </div>
+  <ComplianceItem 
+    label="Risk profile" 
+    checked={state.riskProfile} 
+    onChange={() => toggle("riskProfile")} 
+    hasEye 
+    mandatory
+  />
+
+  <ComplianceItem 
+    label="Advice Eligibility Configuration" 
+    checked={state.adviceEligibility} 
+    onChange={() => toggle("adviceEligibility")} 
+    hasEye 
+  />
+</div>
+
+{/* Right Column */}
+<div className="space-y-6">
+  <ComplianceItem 
+    label="Client Identity Created" 
+    checked={state.clientIdentity} 
+    onChange={() => toggle("clientIdentity")} 
+    disabled
+    mandatory
+  />
+
+  <ComplianceItem 
+    label="Investment Objectives" 
+    checked={state.investmentObjectives} 
+    onChange={() => toggle("investmentObjectives")} 
+    hasEye 
+    mandatory
+  />
+
+  <ComplianceItem 
+    label="RIA Agreement & MITC" 
+    checked={state.riaAgreement} 
+    onChange={() => toggle("riaAgreement")} 
+    hasEye 
+    mandatory
+  />
+</div>
+
       </div>
     </motion.div>
   );
@@ -305,52 +330,246 @@ function ComplianceItem({
   onChange,
   hasEye = false,
   disabled = false,
+  mandatory = false,
 }: {
   label: string;
   checked: boolean;
   onChange: () => void;
   hasEye?: boolean;
   disabled?: boolean;
+  mandatory?: boolean;
 }) {
-
   return (
-    <div 
+    <div
       onClick={() => {
-    if (!disabled) onChange();
-  }}
-     className={cn(
-  "flex items-center justify-between p-4 rounded-xl border bg-white transition select-none h-[72px]",
-  disabled
-    ? "cursor-not-allowed opacity-95"
-    : checked
-    ? "border-[#A7E55C] bg-[#fafff5] cursor-pointer"
-    : "border-gray-400 hover:border-[#A7E55C] cursor-pointer"
-)}
-
+        if (!disabled) onChange();
+      }}
+      className={cn(
+        "flex items-center justify-between p-4 rounded-[20px] border bg-[#FFFFFF] border-[#EDEDED] transition select-none h-[72px]",
+        disabled
+          ? "cursor-not-allowed"
+          : "cursor-pointer"
+      )}
     >
+      {/* LEFT : Checkbox + Label */}
       <div className="flex items-center gap-3">
-        <div className={cn(
-          "w-5 h-5 rounded-full border-2 flex items-center justify-center transition",
-          checked ? "border-[#66c61c]" : "border-gray-300"
-        )}>
-           {checked && <div className="w-2.5 h-2.5 bg-[#66c61c] rounded-full" />}
+        {/* Checkbox */}
+        <div
+          className={cn(
+            "w-5 h-5 rounded border-2 flex items-center justify-center transition",
+            checked
+              ? "border-black bg-black"
+              : "border-gray-400 bg-white"
+          )}
+        >
+          {checked && (
+            <svg
+              className="w-3 h-3 text-white"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          )}
         </div>
-        <span className={cn("font-semibold text-sm", checked ? "text-black" : "text-gray-800")}>
+
+        {/* Label + Mandatory Star */}
+        <span className="font-semibold text-[16px] text-[#344054]">
           {label}
+          {mandatory && <span className="text-red-500 ml-0.5">*</span>}
         </span>
       </div>
 
-      {hasEye && (
-        <Eye className="w-5 h-5 text-[#E16448]" />
-      )}
+      {/* RIGHT : Eye + Toggle */}
+      <div className="flex items-center gap-4">
+        {hasEye && <Eye className="w-5 h-5 text-[#E16448]" />}
+      </div>
     </div>
   );
 }
 
-/* ---------------- STEP 3: MAGIC LINK ---------------- */
+
+
+
+/* ---------------- STEP 3: ELIGIBILITY ---------------- */
+function Step3Eligibility({ state, setState }: { state: any; setState: any }) {
+  const toggleCard = (key: string) => {
+    setState((prev: any) => ({
+      ...prev,
+      [key]: { ...prev[key], enabled: !prev[key].enabled },
+    }));
+  };
+
+  const toggleItem = (cardKey: string, itemKey: string) => {
+    setState((prev: any) => {
+      const card = prev[cardKey];
+      if (!card.enabled) return prev; // Cannot toggle items if card is disabled
+      return {
+        ...prev,
+        [cardKey]: {
+          ...card,
+          items: { ...card.items, [itemKey]: !card.items[itemKey] },
+        },
+      };
+    });
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 5 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -5 }}
+      className="w-full"
+    >
+      <div className="flex items-center justify-between pb-8">
+        <p className="text-2xl pt-4 font-semibold uppercase text-black">Eligibility</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <EligibilityCard
+          title="INTRA DAY"
+          enabled={state.intraday.enabled}
+          items={state.intraday.items}
+          onToggle={() => toggleCard("intraday")}
+          onItemToggle={(item) => toggleItem("intraday", item)}
+        />
+        <EligibilityCard
+          title="SHORT-TERM"
+          enabled={state.shortTerm.enabled}
+          items={state.shortTerm.items}
+          onToggle={() => toggleCard("shortTerm")}
+          onItemToggle={(item) => toggleItem("shortTerm", item)}
+        />
+        <EligibilityCard
+          title="POSITIONAL"
+          enabled={state.positional.enabled}
+          items={state.positional.items}
+          onToggle={() => toggleCard("positional")}
+          onItemToggle={(item) => toggleItem("positional", item)}
+        />
+        <EligibilityCard
+          title="LONG-TERM"
+          enabled={state.longTerm.enabled}
+          items={state.longTerm.items}
+          onToggle={() => toggleCard("longTerm")}
+          onItemToggle={(item) => toggleItem("longTerm", item)}
+        />
+      </div>
+    </motion.div>
+  );
+}
+
+function EligibilityCard({
+  title,
+  enabled,
+  items,
+  onToggle,
+  onItemToggle,
+}: {
+  title: string;
+  enabled: boolean;
+  items: any;
+  onToggle: () => void;
+  onItemToggle: (key: string) => void;
+}) {
+  return (
+    <div className="bg-[#FFFFFF] rounded-[16px] p-4 border border-[#DDDDDD]">
+      <div className="flex items-center gap-4 mb-6">
+        <h3 className="text-lg font-semibold text-[#121212] uppercase tracking-wide">{title}</h3>
+        {/* Toggle Switch */}
+        <button
+          onClick={onToggle}
+          className={cn(
+            "w-10 h-6 rounded-full p-1 transition-colors duration-300 ease-in-out",
+            enabled ? "bg-black" : "bg-gray-300"
+          )}
+        >
+          <div
+            className={cn(
+              "w-4 h-4 bg-white rounded-full shadow-sm transform transition-transform duration-300 ease-in-out",
+              enabled ? "translate-x-4" : "translate-x-0"
+            )}
+          />
+        </button>
+      </div>
+
+      <div className={cn("grid grid-cols-3 gap-y-4 gap-x-2 transition-opacity duration-300", enabled ? "opacity-100" : "opacity-40 pointer-events-none")}>
+        <CheckboxLabel label="Equity cash" checked={items.equityCash} onChange={() => onItemToggle("equityCash")} />
+        <CheckboxLabel label="F&O" checked={items.fno} onChange={() => onItemToggle("fno")} />
+        <CheckboxLabel label="Commodity" checked={items.commodity} onChange={() => onItemToggle("commodity")} />
+        <CheckboxLabel label="Mutual funds" checked={items.mutualFunds} onChange={() => onItemToggle("mutualFunds")} />
+        <CheckboxLabel label="Bonds" checked={items.bonds} onChange={() => onItemToggle("bonds")} />
+      </div>
+    </div>
+  );
+}
+
+function CheckboxLabel({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  onChange: () => void;
+}) {
+  return (
+    <div
+      onClick={onChange}
+      className="flex items-center gap-3 cursor-pointer select-none"
+    >
+      {/* Checkbox */}
+      <div
+        className={cn(
+          "w-5 h-5 rounded border-2 flex items-center justify-center transition",
+          checked
+            ? "bg-black border-black"
+            : "bg-white border-gray-300"
+        )}
+      >
+        {checked && (
+          <svg
+            className="w-3.5 h-3.5 text-white"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        )}
+      </div>
+
+      {/* Label */}
+      <span
+        className={cn(
+          "text-[#515151] font-medium",
+          checked && "text-[#515151]"
+        )}
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
+
+
+
+
+/* ---------------- STEP 4: MAGIC LINK ---------------- */
 import { Send } from "lucide-react";
 
-function Step3MagicLink({ clientName }: { clientName: string }) {
+function Step4MagicLink({ clientName }: { clientName: string }) {
   const displayClientName = clientName.trim() || "Aditya Verma";
 
   return (
@@ -394,7 +613,8 @@ export default function Stepper({
   const steps = [
     { id: 1, label: "Create" },
     { id: 2, label: "Compliance" },
-    { id: 3, label: "Magic Link" },
+    { id: 3, label: "Eligibility" },
+    { id: 4, label: "Magic Link" },
   ];
 
   return (
@@ -570,12 +790,12 @@ function DatePickerBox({
   return (
     <div ref={ref} className="relative w-full">
       <div className="w-full border border-gray-400 hover:shadow-sm rounded-2xl px-6 py-3.5 bg-white focus-within:border-black transition">
-        <label className="text-xs font-medium text-gray-500  tracking-wide">
+        <label className="text-xs font-medium text-gray-500  tracking-wide ">
           {label}
           {required && <span className="text-red-500 ml-0.5">*</span>}
         </label>
 
-        <div className="flex items-center justify-between mt-3.5">
+        <div className="flex items-center justify-between mt-1.5 mb-2">
           <input
             type="text"
             value={textValue}

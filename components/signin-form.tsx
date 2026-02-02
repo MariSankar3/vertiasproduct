@@ -8,13 +8,19 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Check } from "lucide-react"
-import { signIn } from "next-auth/react"
+import { signIn, signOut } from "next-auth/react"
 import { useEffect } from "react"
+
 
 
 
 export function SignInForm() {
   const router = useRouter()
+  
+  useEffect(() => {
+    signOut({ redirect: false })
+  }, [])
+
   const [rememberMe, setRememberMe] = useState(false)
   const [showtypePassword, setShowtypePassword] = useState(false)
   const [email, setEmail] = useState("")
@@ -310,7 +316,10 @@ const handleSignIn = () => {
               <Button
                 variant="outline"
                 className="cursor-pointer h-14 rounded-lg bg-white hover:bg-[#f6f6f6] border-0"
-                onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+                onClick={async () => {
+                  await signOut({ redirect: false })
+                  signIn("google", { callbackUrl: "/dashboard" })
+                }}
               >
                 <svg className="h-14 w-14 scale-[1.5]" viewBox="0 0 24 24">
                   <path
