@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { GripVertical, ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,9 @@ import {
 } from "@dnd-kit/sortable";
 
 import { CSS } from "@dnd-kit/utilities";
-
+import { usePage } from "./page-context";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 // const clients = [] ?? clientsData
 const clients = clientsData ?? [];
 
@@ -99,6 +101,7 @@ export function ClientsTable({
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(8);
   const [loading, setLoading] = useState(true);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const DEFAULT_COLUMNS = ALL_COLUMNS.filter((c) => c.mandatory).map(
     (c) => c.key,
   );
@@ -253,7 +256,77 @@ export function ClientsTable({
 
     return 0;
   });
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const { registerDownloadHandler } = usePage();
+
+  // Use refs to keep track of current selection/data without re-triggering effect
+  const stateRef = useRef({
+    selectedIds,
+    sortedClients,
+    orderedVisibleColumns,
+    ALL_COLUMNS,
+  });
+
+  useEffect(() => {
+    stateRef.current = {
+      selectedIds,
+      sortedClients,
+      orderedVisibleColumns,
+      ALL_COLUMNS,
+    };
+  }, [selectedIds, sortedClients, orderedVisibleColumns]);
+
+  useEffect(() => {
+    // Register the handler ONLY ONCE (on mount, or when registerDownloadHandler changes)
+    registerDownloadHandler(() => {
+      const { selectedIds, sortedClients, orderedVisibleColumns, ALL_COLUMNS } =
+        stateRef.current;
+
+      // 1. Filter data based on selection
+      const dataToExport =
+        selectedIds.length > 0
+          ? sortedClients.filter((c) => selectedIds.includes(c.id))
+          : sortedClients;
+
+      if (dataToExport.length === 0) {
+        alert("No clients selected to download.");
+        return;
+      }
+
+      // 2. Prepare columns
+      const exportableColumns = orderedVisibleColumns.filter(
+        (colKey) => colKey !== "actions",
+      );
+
+      const tableHead = exportableColumns.map((colKey) => {
+        const colDef = ALL_COLUMNS.find((c) => c.key === colKey);
+        return colDef?.label || colKey;
+      });
+
+      // 3. Prepare rows
+      const tableBody = dataToExport.map((client) => {
+        return exportableColumns.map((colKey) => {
+          const val = client[colKey as keyof typeof client];
+          return val ? String(val) : "";
+        });
+      });
+
+      // 4. Generate PDF
+      const doc = new jsPDF();
+      doc.text("Clients Report", 14, 10);
+
+      autoTable(doc, {
+        head: [tableHead],
+        body: tableBody,
+        startY: 20,
+        styles: { fontSize: 7 },
+        headStyles: { fillColor: [167, 229, 92], textColor: [0, 0, 0] },
+      });
+
+      doc.save("clients_report.pdf");
+    });
+  }, [registerDownloadHandler]);
+
+
   const allSelected =
     sortedClients.length > 0 &&
     sortedClients.every((c) => selectedIds.includes(c.id));
@@ -522,7 +595,7 @@ export function ClientsTable({
     </div>
   </div>
 )}
-            <table className="w-full min-w-max">
+            <table className="w-full min-w-max ">
               <thead>
                 <tr className="border-b border-[#eaecf0] bg-[#F7F7F7]">
                   <th className="text-left p-4 w-12">

@@ -28,7 +28,7 @@ export default function Profile() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }} className="flex flex-col bg-white w-full max-w-md rounded-xl shadow-sm p-6 text-center">
           
-        You need to Login
+       Log in with Google or Apple
           
      <Link
         href="/signin"

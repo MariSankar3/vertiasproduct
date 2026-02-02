@@ -40,10 +40,10 @@ export function DashboardCards({
       animate="visible"
       className="space-y-12"
     >
-      {/* <h1 className="font-medium text-2xl mt-10 text-gray-800 font-bold">DASHBOARD</h1> */}
-      <h1 className="font-medium text-2xl mt-10 text-gray-800 font-bold">
+      <h1 className="font-medium text-2xl mt-10 text-gray-800 font-bold">DASHBOARD</h1>
+      {/* <h1 className="font-medium text-2xl mt-10 text-gray-800 font-bold">
   Hi {session?.user?.name ?? "User"} 👋
-</h1>
+</h1> */}
 
       <div className="flex gap-8 items-center">
         <div className="flex items-center gap-2">

@@ -5,6 +5,8 @@ import { DownloadIcon, EditIcon, FileIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { InvoiceDetails } from "./invoicedetails";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const INVOICES = [
   { id: 1, date: "Sep 25, 2025", status: "Paid", freq: "Monthly" },
@@ -24,6 +26,121 @@ export function Billing() {
       setLastSelected(item);
       setSelectedId(id);
     }
+  };
+
+  const handleDownloadInvoice = () => {
+    const doc = new jsPDF();
+
+    // Title
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.text("Monthly invoice", 14, 22);
+
+    // Status Badge
+    let statusColor = [0, 0, 0];
+    if (lastSelected.status === "Paid") statusColor = [22, 163, 74];
+    else if (lastSelected.status === "Pending") statusColor = [234, 88, 12];
+    else if (lastSelected.status === "Overdue") statusColor = [220, 38, 38];
+
+    doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
+    doc.setFontSize(10);
+    doc.text(lastSelected.status, 60, 21);
+
+    // Date subtext
+    doc.setTextColor(156, 163, 175); // gray
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text(`Date ${lastSelected.date}`, 14, 28);
+
+    // Close button simulation (X) - skipped for PDF
+
+    // -- GRID DETAILS --
+    let y = 45;
+    doc.setFontSize(8);
+    doc.setTextColor(156, 163, 175); // gray uppercase
+    doc.setFont("helvetica", "bold");
+    doc.text("DUE DATE", 14, y);
+    doc.text("STATUS", 100, y);
+
+    y += 5;
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.setFont("helvetica", "bold");
+    doc.text(lastSelected.date, 14, y);
+    doc.text(lastSelected.status, 100, y);
+
+    y += 15;
+    doc.setFontSize(8);
+    doc.setTextColor(156, 163, 175);
+    doc.text("INVOICE NUMBER", 14, y);
+    doc.text("PAYMENT METHOD", 100, y);
+
+    y += 5;
+    doc.setFontSize(10);
+    doc.setTextColor(37, 99, 235); // blue for invoice num
+    doc.text("93E29A9E", 14, y);
+
+    doc.setTextColor(0, 0, 0);
+    doc.text("VISA 1175", 100, y);
+
+    // -- TABLE SECTION --
+    y += 15;
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "bold");
+    doc.text("Renewing monthly seats", 14, y);
+
+    y += 5;
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(107, 114, 128);
+    doc.text(
+      "Assigned monthly seats that renewed for September 25, 2025 - October 25, 2025",
+      14,
+      y,
+    );
+
+    // AutoTable for items
+    autoTable(doc, {
+      startY: y + 5,
+      head: [],
+      body: [
+        ["1 Full", "$15.00"],
+        ["0 Dev", "$0.00"],
+        ["0 Collab", "$0.00"],
+      ],
+      theme: "plain",
+      styles: { fontSize: 10, cellPadding: 2 },
+      columnStyles: {
+        0: { halign: "left" },
+        1: { halign: "right" },
+      },
+    });
+
+    // -- TOTALS --
+    // @ts-ignore
+    let finalY = doc.lastAutoTable.finalY + 10;
+
+    doc.setDrawColor(229, 231, 235);
+    doc.line(14, finalY, 196, finalY); // top border
+
+    finalY += 10;
+    doc.setFontSize(10);
+    doc.setTextColor(55, 65, 81);
+    doc.text("Subtotal", 14, finalY);
+    doc.text("$15.00", 196, finalY, { align: "right" });
+
+    finalY += 7;
+    doc.text("Taxes", 14, finalY);
+    doc.text("$0.00", 196, finalY, { align: "right" });
+
+    finalY += 8;
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(17, 24, 39);
+    doc.text("Total", 14, finalY);
+    doc.text("$15.00", 196, finalY, { align: "right" });
+
+    doc.save(`invoice_${lastSelected.id}.pdf`);
   };
 
   const isPanelOpen = selectedId !== null;
@@ -247,7 +364,10 @@ export function Billing() {
                   </div>
                 </div>
 
-                <button className="cursor-pointer w-full flex items-center justify-center gap-2 text-black border border-gray-300 py-3 rounded-xl font-medium hover:bg-gray-200 transition-all active:scale-[0.98]">
+                <button
+                  onClick={handleDownloadInvoice}
+                  className="cursor-pointer w-full flex items-center justify-center gap-2 text-black border border-gray-300 py-3 rounded-xl font-medium hover:bg-gray-200 transition-all active:scale-[0.98]"
+                >
                   <DownloadIcon size={18} />
                   Download PDF
                 </button>

@@ -1,6 +1,9 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { usePage } from "./page-context";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import {
   Edit,
   ChevronsUp,
@@ -60,7 +63,7 @@ export function CallsTable({
   useEffect(() => {
     const calculateRows = () => {
       // Calculate 60vh in pixels
-      const containerHeight = window.innerHeight * 0.62;
+      const containerHeight = window.innerHeight - 300;
       // Available height for rows = Container Height - Header Height
       const availableHeight = containerHeight - HEADER_HEIGHT;
       // Calculate max rows that can fit
@@ -306,6 +309,57 @@ export function CallsTable({
       return 0;
     });
   }, [filteredClients, sortKey, sortOrder]);
+
+  const { registerDownloadHandler } = usePage();
+  const stateRef = useRef({ sortedClients });
+
+  useEffect(() => {
+    stateRef.current = { sortedClients };
+  }, [sortedClients]);
+
+  useEffect(() => {
+    registerDownloadHandler(async () => {
+      // Simulate delay for progress indicator
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const { sortedClients } = stateRef.current;
+
+      if (sortedClients.length === 0) {
+        alert("No calls to download.");
+        return;
+      }
+
+      const tableBody = sortedClients.map((client) => [
+        client.call,
+        client.name,
+        client.segment,
+        client.version,
+        client.entryprice,
+        client.targetprice,
+        client.stoploss,
+        client.riskratio,
+        client.timedate,
+        client.validity,
+        client.shared,
+        client.status,
+      ]);
+
+      const doc = new jsPDF();
+      doc.text("Calls Report", 14, 10);
+
+      autoTable(doc, {
+        head: [[
+          "Call Type", "Stock Name", "Segment", "Version", "Entry",
+          "Target", "Stop Loss", "Risk", "Date", "Validity", "Shared", "Status"
+        ]],
+        body: tableBody,
+        startY: 20,
+        styles: { fontSize: 8 },
+        headStyles: { fillColor: [167, 229, 92], textColor: [0, 0, 0] },
+      });
+
+      doc.save("calls_report.pdf");
+    });
+  }, [registerDownloadHandler]);
 
   const totalPages = Math.ceil(sortedClients.length / rowsPerPage);
 

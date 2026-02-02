@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Calendar, Download, Filter, Search, Users } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-
+import { usePage } from "./page-context";
 type ActivePage = "dashboard" | "clients" | "log" | "calls";
 
 export function CallPage({
@@ -29,6 +29,8 @@ export function CallPage({
     setSearchValue("");
     onSearch?.(""); // reset results
   };
+
+  const { triggerDownload } = usePage();
 
   // const [showPassword, setShowPassword] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false);
@@ -263,6 +265,9 @@ export function CallPage({
                 variant="outline"
                 size="icon"
                 className="h-11 w-11 rounded-full bg-[#121212] text-white cursor-pointer"
+                onClick={() => {
+                  triggerDownload();
+                }}
               >
                 <Download className="h-5 w-5" />
               </Button>

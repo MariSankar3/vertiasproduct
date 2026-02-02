@@ -559,4 +559,5 @@ export const clientsData = [
         kycvalidated:"Yes",
     },
     
+    
 ]

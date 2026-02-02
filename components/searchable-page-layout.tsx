@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
-
+import { PageProvider } from "./page-context"
 
 interface SearchablePageLayoutProps {
   name: string
@@ -77,6 +77,7 @@ export function SearchablePageLayout({
 
   return (
     <>
+    <PageProvider>
       <CallPage
         name={name}
         active={active}
@@ -91,8 +92,6 @@ export function SearchablePageLayout({
         statusFilters={statusFilters}
         categoryFilters={categoryFilters}
       />
-
-
 
       {showFilter && isFilterOpen && (
         <div className="fixed inset-0 z-40 flex items-start justify-center bg-black/30 pt-24">
@@ -116,7 +115,7 @@ export function SearchablePageLayout({
                   {active === "clients" ? "Status" : "Call Status"}
                 </p>
                 <div className="grid grid-cols-3 gap-y-6 gap-x-2">
-                  {statusOptions.map(option => (
+                  {statusOptions.map((option) => (
                     <label
                       key={option}
                       className="flex cursor-pointer items-center gap-3"
@@ -129,13 +128,12 @@ export function SearchablePageLayout({
                       <span
                         className={cn(
                           "inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition-colors",
-                          statusStyles[option] ?? "bg-gray-100 text-gray-500 border-gray-300"
+                          statusStyles[option] ??
+                            "bg-gray-100 text-gray-500 border-gray-300",
                         )}
                       >
                         {option}
                       </span>
-
-
                     </label>
                   ))}
                 </div>
@@ -146,7 +144,7 @@ export function SearchablePageLayout({
                   {active === "clients" ? "Category" : "Call Type"}
                 </p>
                 <div className="grid grid-cols-3 gap-y-6 gap-x-2">
-                  {categoryOptions.map(option => (
+                  {categoryOptions.map((option) => (
                     <label
                       key={option}
                       className="flex cursor-pointer items-center gap-3"
@@ -183,7 +181,7 @@ export function SearchablePageLayout({
           </div>
         </div>
       )}
-
+    </PageProvider>
 
     </>
   )
