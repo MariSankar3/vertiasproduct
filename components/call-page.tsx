@@ -65,11 +65,16 @@ export function CallPage({
   const formatDate = (date: Date) => date.toLocaleDateString("en-GB"); // DD/MM/YYYY
 
   const actionConfig =
-    active === "calls"
-      ? {
-          label: "+ New Calls",
-          href: "/newcall",
-        }
+  active === "calls"
+    ? {
+        label: "+ New Calls",
+        href: "/newcall",
+      }
+    : active === "dashboard"
+    ? {
+        label: "+ Give Advice",
+        href: "/newclients",
+      }
       : {
           label: "+ New Client",
           href: "/newclients",
@@ -201,7 +206,7 @@ export function CallPage({
       <motion.div
         animate={{ scale: zoomRight ? 1.05 : 1 }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        className="flex items-center gap-3 bg-[#000] h-[48px] rounded-full"
+        className="flex items-center gap-3 bg-[#000] h-[50px] rounded-full"
       >
         {!searchOpen && (
           <Button
@@ -279,7 +284,8 @@ export function CallPage({
             className={`
     h-12 flex items-center rounded-full overflow-visible
     ${searchOpen ? "w-[370px]" : "w-12"}
-    ${isTyping ? "bg-[#a7e55c]" : "bg-[#121212]"}
+    ${isTyping ? "bg-[#a7e55c] h-13" : "bg-[#121212]"}
+
   `}
           >
             {/* INPUT */}
@@ -364,13 +370,13 @@ export function CallPage({
                 setTimeout(() => setZoomRight(false), 150);
               }}
               className={`
-    h-12 w-12 rounded-full shrink-0
-    transition-colors duration-100 cursor-pointer
+    h-11 w-11 rounded-full shrink-0
+    transition-colors duration-100 cursor-pointer 
     ${
       isTyping
-        ? "bg-black text-white"
+        ? "bg-black text-white h-12 w-12 mr-[1.5px]"
         : searchOpen
-          ? "bg-[#a7e55c] text-black"
+          ? "bg-[#a7e55c] text-black h-12 w-12 mr-[1.5px]"
           : "bg-[#121212] text-white border"
     }
   `}
