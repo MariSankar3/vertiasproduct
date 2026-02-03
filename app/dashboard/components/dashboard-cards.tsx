@@ -42,8 +42,9 @@ export function DashboardCards({
     >
       {/* <h1 className="font-medium text-2xl mt-10 text-gray-800 font-bold">DASHBOARD</h1> */}
       <h1 className="font-medium text-2xl uppercase mt-10 text-gray-800 font-bold">
-  Good morning, {session?.user?.name ?? "User"} !
+  {getGreeting()}, {session?.user?.name ?? "User"} !
 </h1>
+
 
       <div className="flex gap-8 items-center">
         <div className="flex items-center gap-2">
@@ -235,4 +236,11 @@ export function DashboardCards({
     </motion.div>
 
   )
+}
+function getGreeting() {
+  const hour = new Date().getHours();
+
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  return "Good evening";
 }
