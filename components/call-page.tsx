@@ -290,15 +290,17 @@ export function CallPage({
                 >
                   <DropdownMenuItem
                     onClick={() => triggerDownload("pdf")}
-                    className="cursor-pointer text-sm font-medium text-gray-700 hover:bg-gray-50 focus:bg-gray-50 py-2.5 px-3 rounded-lg flex items-center gap-2"
+                    className="cursor-pointer text-sm font-medium text-gray-700 hover:bg-gray-50 focus:bg-gray-50 py-2.5 px-3 rounded-lg flex items-center gap-2 justify-between"
                   >
                     Export as PDF
+                    <Image src="/pdf.png" alt="pdf" width={15} height={15} />
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => triggerDownload("excel")}
-                    className="cursor-pointer text-sm font-medium text-gray-700 hover:bg-gray-50 focus:bg-gray-50 py-2.5 px-3 rounded-lg flex items-center gap-2"
+                    className="cursor-pointer text-sm font-medium text-gray-700 hover:bg-gray-50 focus:bg-gray-50 py-2.5 px-3 rounded-lg flex items-center gap-2 justify-between"
                   >
                     Export as Excel
+                    <Image src="/xls.png" alt="excel" width={15} height={15} />
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
