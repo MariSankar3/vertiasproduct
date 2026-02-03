@@ -768,7 +768,7 @@ export function ClientsTable({
                   Array.from({
                     length: rowsPerPage - paginatedClients.length,
                   }).map((_, i) => (
-                    <tr key={`empty-${i}`} className="h-[70px]">
+                    <tr key={`empty-${i}`} className="">
                       <td
                         className="p-4"
                         colSpan={orderedVisibleColumns.length + 1}

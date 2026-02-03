@@ -653,20 +653,6 @@ export function CallsTable({
                     />
                   </th>
 
-                  {/* 
-
-                  <th
-                    className="
-    hidden xl:table-cell
-    h-[56px]
-    px-3 py-0
-    text-left
-    text-xs font-semibold uppercase tracking-wider
-    text-[#667085]
-  "
-                  >
-                    Risk&nbsp;Ratio
-                  </th> */}
 
                   <SortableHeader
                     label="Call Time / Date"
