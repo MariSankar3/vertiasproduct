@@ -73,21 +73,21 @@ type ClientsTableProps = {
   categoryFilters?: string[];
 };
 const ALL_COLUMNS = [
-  { key: "id", label: "Client ID", mandatory: true },
-  { key: "name", label: "Name", mandatory: true },
-  { key: "status", label: "Status", mandatory: true },
-  { key: "riskScore", label: "Risk Score", mandatory: true },
-  { key: "riskCategory", label: "Bucket", mandatory: true },
-  { key: "email", label: "Email Address", mandatory: true },
-  { key: "phone", label: "Phone Number", mandatory: true },
-  { key: "actions", label: "Action", mandatory: true },
-  { key: "dob", label: "Date of Birth" },
-  { key: "gender", label: "Gender" },
-  { key: "lastlogin", label: "Last Login" },
-  { key: "lastcall", label: "Last Call" },
-  { key: "city", label: "City" },
-  { key: "state", label: "State" },
-  { key: "kycvalidated", label: "KYC Validated" },
+  { key: "id", label: "Client ID", mandatory: true, width: "140px" },
+  { key: "name", label: "Name", mandatory: true, width:"180px" }, // Flexible width
+  { key: "status", label: "Status", mandatory: true, width: "140px" },
+  { key: "riskScore", label: "Risk Score", mandatory: true, width: "140px" },
+  { key: "riskCategory", label: "Bucket", mandatory: true, width: "110px" },
+  { key: "email", label: "Email Address", mandatory: true,width:"190px" }, // Flexible width
+  { key: "phone", label: "Phone Number", mandatory: true, width: "140px" },
+  { key: "actions", label: "Action", mandatory: true, width: "80px" },
+  { key: "dob", label: "Date of Birth", width: "170px" },
+  { key: "gender", label: "Gender", width: "100px" },
+  { key: "lastlogin", label: "Last Login", width: "140px" },
+  { key: "lastcall", label: "Last Call", width: "140px" },
+  { key: "city", label: "City", width: "120px" },
+  { key: "state", label: "State", width: "120px" },
+  { key: "kycvalidated", label: "KYC Validated", width: "140px" },
 ];
 
 export function ClientsTable({
@@ -595,7 +595,7 @@ export function ClientsTable({
     </div>
   </div>
 )}
-            <table className="w-full min-w-max ">
+            <table className="w-full table-fixed">
               <thead>
                 <tr className="border-b border-[#eaecf0] bg-[#F7F7F7]">
                   <th className="text-left p-4 w-12">
@@ -629,7 +629,7 @@ export function ClientsTable({
                       "status",
                     ].includes(colKey);
 
-                    if (isSortable) {
+                      if (isSortable) {
                         return (
                           <SortableHeader
                             key={colKey}
@@ -637,18 +637,20 @@ export function ClientsTable({
                             sKey={colKey as SortKey}
                             currentSortKey={sortKey}
                             currentSortOrder={sortOrder}
+                            width={(colDef as any)?.width}
                             onSort={(k, o) => {
                               setSortKey(k);
                               setSortOrder(o);
                             }}
                           />
                         );
-                    }
+                      }
                     
                     return (
                       <th
                         key={colKey}
                         className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider"
+                        style={{ width: (colDef as any)?.width }}
                       >
                         {colDef?.label}
                       </th>
@@ -697,6 +699,14 @@ export function ClientsTable({
                     </tr>
                   ))
                 )}
+                 {/* EMPTY ROW FILLER */}
+                 {!loading && paginatedClients.length < rowsPerPage &&
+                    Array.from({ length: rowsPerPage - paginatedClients.length }).map((_, i) => (
+                      <tr key={`empty-${i}`} className="h-[70px]">
+                          <td className="p-4" colSpan={orderedVisibleColumns.length + 1}>&nbsp;</td>
+                      </tr>
+                    ))
+                 }
               </tbody>
             </table>
           </div>
@@ -908,17 +918,22 @@ function SortableHeader({
   currentSortKey,
   currentSortOrder,
   onSort,
+  width,
 }: {
   label: string;
   sKey: SortKey;
   currentSortKey: SortKey;
   currentSortOrder: SortOrder;
   onSort: (key: SortKey, order: SortOrder) => void;
+  width?: string;
 }) {
   const isSelected = currentSortKey === sKey;
 
   return (
-    <th className="p-4 text-xs font-semibold uppercase tracking-wider">
+    <th
+      className="p-4 text-xs font-semibold uppercase tracking-wider"
+      style={{ width }}
+    >
       <div className="flex items-center gap-1">
         <span>{label}</span>
         <DropdownMenu modal={false}>
@@ -1195,32 +1210,32 @@ function renderCellContent(client: any, colKey: string) {
         <td className="px-4 py-3 text-sm text-[#475467]">{client.email}</td>
       );
     case "phone":
-      return <td className="py-3 text-md text-[#475467]">{client.phone}</td>;
+      return <td className="text-sm text-[#475467]">{client.phone}</td>;
     case "dob":
-      return <td className="px-4 py-3 text-sm text-[#475467]">{client.dob}</td>;
+      return <td className="px-4 text-sm text-[#475467]">{client.dob}</td>;
     case "gender":
       return (
-        <td className="px-4 py-3 text-sm text-[#475467]">{client.gender}</td>
+        <td className="px-4 text-sm text-[#475467]">{client.gender}</td>
       );
     case "lastlogin":
       return (
-        <td className="px-4 py-3 text-sm text-[#475467]">{client.lastlogin}</td>
+        <td className="px-4 text-sm text-[#475467]">{client.lastlogin}</td>
       );
     case "lastcall":
       return (
-        <td className="px-4 py-3 text-sm text-[#475467]">{client.lastcall}</td>
+        <td className="px-4 text-sm text-[#475467]">{client.lastcall}</td>
       );
     case "city":
       return (
-        <td className="px-4 py-3 text-sm text-[#475467]">{client.city}</td>
+        <td className="px-4 text-sm text-[#475467]">{client.city}</td>
       );
     case "state":
       return (
-        <td className="px-4 py-3 text-sm text-[#475467]">{client.state}</td>
+        <td className="px-4 text-sm text-[#475467]">{client.state}</td>
       );
     case "kycvalidated":
       return (
-        <td className="px-4 py-3 text-sm text-[#475467]">
+        <td className="px-4  text-sm text-[#475467]">
           {client.kycvalidated}
         </td>
       );

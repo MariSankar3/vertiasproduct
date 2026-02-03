@@ -39,6 +39,7 @@ type SortKey =
   | "entryprice"
   | "targetprice"
   | "stoploss"
+  | "riskratio"
   | "status"
   | null;
 type SortOrder = "asc" | "desc" | null;
@@ -187,6 +188,14 @@ export function CallsTable({
     return true;
   });
 
+  const parseNumber = (value: any) => {
+    if (value === null || value === undefined) return Number.POSITIVE_INFINITY;
+    if (typeof value === "number") return value;
+
+    const num = Number(String(value).replace(/[^0-9.-]/g, ""));
+    return isNaN(num) ? Number.POSITIVE_INFINITY : num;
+  };
+
   const sortedClients = useMemo(() => {
     if (!sortKey || !sortOrder) return filteredClients;
 
@@ -272,26 +281,31 @@ export function CallsTable({
           : versionB.localeCompare(versionA);
       }
       if (sortKey === "entryprice") {
-        const entrypriceA = a.entryprice;
-        const entrypriceB = b.entryprice;
         return sortOrder === "asc"
-          ? entrypriceA - entrypriceB
-          : entrypriceB - entrypriceA;
+          ? parseNumber(a.entryprice) - parseNumber(b.entryprice)
+          : parseNumber(b.entryprice) - parseNumber(a.entryprice);
       }
+
       if (sortKey === "targetprice") {
-        const targetpriceA = a.targetprice;
-        const targetpriceB = b.targetprice;
         return sortOrder === "asc"
-          ? targetpriceA.localeCompare(targetpriceB)
-          : targetpriceB.localeCompare(targetpriceA);
+          ? parseNumber(a.targetprice) - parseNumber(b.targetprice)
+          : parseNumber(b.targetprice) - parseNumber(a.targetprice);
       }
+
       if (sortKey === "stoploss") {
-        const stoplossA = a.stoploss.toLowerCase();
-        const stoplossB = b.stoploss.toLowerCase();
+        const stoplossA = parseNumber(a.stoploss);
+        const stoplossB = parseNumber(b.stoploss);
+
         return sortOrder === "asc"
-          ? stoplossA.localeCompare(stoplossB)
-          : stoplossB.localeCompare(stoplossA);
+          ? stoplossA - stoplossB
+          : stoplossB - stoplossA;
       }
+      if (sortKey === "riskratio") {
+        return sortOrder === "asc"
+          ? parseNumber(a.riskratio) - parseNumber(b.riskratio)
+          : parseNumber(b.riskratio) - parseNumber(a.riskratio);
+      }
+
       if (sortKey === "status") {
         const statusA = a.status.toLowerCase();
         const statusB = b.status.toLowerCase();
@@ -300,8 +314,8 @@ export function CallsTable({
           : statusB.localeCompare(statusA);
       }
       if (sortKey === "shared") {
-        const sharedA = a.shared.toLowerCase();
-        const sharedB = b.shared.toLowerCase();
+        const sharedA = a.shared;
+        const sharedB = b.shared;
         return sortOrder === "asc"
           ? sharedA.localeCompare(sharedB)
           : sharedB.localeCompare(sharedA);
@@ -347,10 +361,22 @@ export function CallsTable({
       doc.text("Calls Report", 14, 10);
 
       autoTable(doc, {
-        head: [[
-          "Call Type", "Stock Name", "Segment", "Version", "Entry",
-          "Target", "Stop Loss", "Risk", "Date", "Validity", "Shared", "Status"
-        ]],
+        head: [
+          [
+            "Call Type",
+            "Stock Name",
+            "Segment",
+            "Version",
+            "Entry",
+            "Target",
+            "Stop Loss",
+            "Risk",
+            "Date",
+            "Validity",
+            "Shared",
+            "Status",
+          ],
+        ],
         body: tableBody,
         startY: 20,
         styles: { fontSize: 8 },
@@ -469,7 +495,23 @@ export function CallsTable({
       <div className="bg-white border border-[#eaecf0] h-[calc(100vh-310px)] flex flex-col rounded-b-2xl">
         <div className="overflow-x-auto scrollbar-x-thin">
           <div className="max-h-[calc(100vh-310px)] ">
-            <table className="w-full">
+            <table className="w-full table-fixed">
+              <colgroup>
+                <col className="w-[100px]" />
+                <col className="w-[120px]" />
+                <col className="w-[90px]  lg:table-column" />
+                <col className="w-[90px]  xl:table-column" />
+                <col className="w-[110px]" />
+                <col className="w-[120px]  md:table-column" />
+                <col className="w-[100px]  lg:table-column" />
+                <col className="w-[100px]  xl:table-column" />
+                <col className="w-[140px]" />
+                <col className="w-[80px]  md:table-column" />
+                <col className="w-[80px]  lg:table-column" />
+                <col className="w-[70px]" />
+                <col className="w-[55px]" />
+              </colgroup>
+
               <thead>
                 <tr className="border-b border-[#eaecf0] sticky top-0 z-10 bg-white">
                   <SortableHeader
@@ -482,7 +524,7 @@ export function CallsTable({
                       setSortOrder(o);
                     }}
                   />
-                  
+
                   <SortableHeader
                     label="Stock Name"
                     sKey="name"
@@ -494,60 +536,96 @@ export function CallsTable({
                     }}
                   />
 
-                  <SortableHeader
-                    label="Segment"
-                    sKey="segment"
-                    currentSortKey={sortKey}
-                    currentSortOrder={sortOrder}
-                    onSort={(k, o) => {
-                      setSortKey(k);
-                      setSortOrder(o);
-                    }}
-                  />
-                  <SortableHeader
-                    label="Version"
-                    sKey="version"
-                    currentSortKey={sortKey}
-                    currentSortOrder={sortOrder}
-                    onSort={(k, o) => {
-                      setSortKey(k);
-                      setSortOrder(o);
-                    }}
-                  />
-                   <SortableHeader
-                    label="Entry Price"
-                    sKey="version"
-                    currentSortKey={sortKey}
-                    currentSortOrder={sortOrder}
-                    onSort={(k, o) => {
-                      setSortKey(k);
-                      setSortOrder(o);
-                    }}
-                  />
-                  <SortableHeader
-                    label="Target Price"
-                    sKey="targetprice"
-                    currentSortKey={sortKey}
-                    currentSortOrder={sortOrder}
-                    onSort={(k, o) => {
-                      setSortKey(k);
-                      setSortOrder(o);
-                    }}
-                  />
-                   <SortableHeader
-                    label="Stop Loss"
-                    sKey="stoploss"
-                    currentSortKey={sortKey}
-                    currentSortOrder={sortOrder}
-                    onSort={(k, o) => {
-                      setSortKey(k);
-                      setSortOrder(o);
-                    }}
-                  />
-                  
-                  <th className="text-left p-3 text-xs font-semibold text-[#667085] uppercase tracking-wider">
-                    Risk Ratio
+                  <th className=" lg:table-cell p-0">
+                    <SortableHeader
+                      label="Segment"
+                      sKey="segment"
+                      currentSortKey={sortKey}
+                      currentSortOrder={sortOrder}
+                      onSort={(k, o) => {
+                        setSortKey(k);
+                        setSortOrder(o);
+                      }}
+                    />
                   </th>
+
+                  <th className=" xl:table-cell p-0">
+                    <SortableHeader
+                      label="Version"
+                      sKey="version"
+                      currentSortKey={sortKey}
+                      currentSortOrder={sortOrder}
+                      onSort={(k, o) => {
+                        setSortKey(k);
+                        setSortOrder(o);
+                      }}
+                    />
+                  </th>
+
+                  <SortableHeader
+                    label="Entry Price"
+                    sKey="entryprice"
+                    currentSortKey={sortKey}
+                    currentSortOrder={sortOrder}
+                    onSort={(k, o) => {
+                      setSortKey(k);
+                      setSortOrder(o);
+                    }}
+                  />
+
+                  <th className=" md:table-cell p-0">
+                    <SortableHeader
+                      label="Target Price"
+                      sKey="targetprice"
+                      currentSortKey={sortKey}
+                      currentSortOrder={sortOrder}
+                      onSort={(k, o) => {
+                        setSortKey(k);
+                        setSortOrder(o);
+                      }}
+                    />
+                  </th>
+
+                  <th className=" lg:table-cell p-0">
+                    <SortableHeader
+                      label="Stop Loss"
+                      sKey="stoploss"
+                      currentSortKey={sortKey}
+                      currentSortOrder={sortOrder}
+                      onSort={(k, o) => {
+                        setSortKey(k);
+                        setSortOrder(o);
+                      }}
+                    />
+                  </th>
+                  <th className=" lg:table-cell p-0">
+                    <SortableHeader
+                      label="Risk Ratio"
+                      sKey="riskratio"
+                      currentSortKey={sortKey}
+                      currentSortOrder={sortOrder}
+                      onSort={(k, o) => {
+                        setSortKey(k);
+                        setSortOrder(o);
+                      }}
+                    />
+                  </th>
+
+                  {/* 
+
+                  <th
+                    className="
+    hidden xl:table-cell
+    h-[56px]
+    px-3 py-0
+    text-left
+    text-xs font-semibold uppercase tracking-wider
+    text-[#667085]
+  "
+                  >
+                    Risk&nbsp;Ratio
+                  </th> */}
+
                   <SortableHeader
                     label="Call Time / Date"
                     sKey="timedate"
@@ -558,22 +636,23 @@ export function CallsTable({
                       setSortOrder(o);
                     }}
                   />
-                  <th className="text-left p-3 text-xs font-semibold text-[#667085] uppercase tracking-wider">
+                  <th className="text-left p-3 text-xs font-semibold text-[#667085] uppercase tracking-wider md:table-cell">
                     Validity
                   </th>
-                   <SortableHeader
-                    label="Shared"
-                    sKey="shared"
-                    currentSortKey={sortKey}
-                    currentSortOrder={sortOrder}
-                    onSort={(k, o) => {
-                      setSortKey(k);
-                      setSortOrder(o);
-                    }}
-                  />
-                  {/* <th className="text-left p-4 text-xs font-semibold text-[#667085] uppercase tracking-wider">
-                    Shared
-                  </th> */}
+
+                  <th className="lg:table-cell p-0">
+                    <SortableHeader
+                      label="Shared"
+                      sKey="shared"
+                      currentSortKey={sortKey}
+                      currentSortOrder={sortOrder}
+                      onSort={(k, o) => {
+                        setSortKey(k);
+                        setSortOrder(o);
+                      }}
+                    />
+                  </th>
+
                   <th className="text-left p-3 text-xs font-semibold text-[#667085] uppercase tracking-wider">
                     Status
                   </th>
@@ -587,9 +666,9 @@ export function CallsTable({
                   Array.from({ length: rowsPerPage }).map((_, i) => (
                     <TableSkeletonRow key={i} />
                   ))
-                ) : filteredClients.length === 0 ? (
+                ) : paginatedClients.length === 0 ? (
                   <tr>
-                    <td colSpan={12} className="h-[50vh]">
+                    <td colSpan={13} className="h-[50vh]">
                       <div className="flex flex-col items-center justify-center h-full text-center font-nunito">
                         {/* Image */}
                         <Image
@@ -614,88 +693,102 @@ export function CallsTable({
                     </td>
                   </tr>
                 ) : (
-                  paginatedClients.map((client, index) => (
-                    <tr
-  key={index}
-  className={cn(
-    "hover:bg-[#f9fafb] transition",
-    index === paginatedClients.length - 1 && "border-0"
-  )}
->
-  <td
-    className={cn(
-      "p-4 text-sm font-semibold whitespace-nowrap",
-      client.call === "Long" && "text-[#34C759]",
-      client.call === "Short" && "text-[#FF3B30]"
-    )}
-  >
-    {client.call}
-  </td>
+                  <>
+                    {paginatedClients.map((client, index) => (
+                      <tr
+                        key={index}
+                        className={cn(
+                          "hover:bg-[#f9fafb] transition h-[65px]",
+                          index === paginatedClients.length - 1 && "border-0",
+                        )}
+                      >
+                        <td
+                          className={cn(
+                            "p-4 text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis",
+                            client.call === "Long" && "text-[#34C759]",
+                            client.call === "Short" && "text-[#FF3B30]",
+                          )}
+                        >
+                          {client.call}
+                        </td>
 
-  <td className="p-4 text-sm font-medium text-[#101828] whitespace-nowrap truncate max-w-[160px]">
-    {client.name}
-  </td>
+                        <td className="p-4 text-sm font-medium text-[#101828] whitespace-nowrap overflow-hidden text-ellipsis">
+                          {client.name}
+                        </td>
 
-  <td className="p-4 text-sm whitespace-nowrap truncate max-w-[120px]">
-    {client.segment}
-  </td>
+                        <td className="p-4 text-sm whitespace-nowrap overflow-hidden text-ellipsis  lg:table-cell">
+                          {client.segment}
+                        </td>
 
-  <td className="p-4 text-sm font-medium text-[#101828] whitespace-nowrap truncate max-w-[100px]">
-    {client.version}
-  </td>
+                        <td className="p-4 text-sm font-medium text-[#101828] whitespace-nowrap overflow-hidden text-ellipsis xl:table-cell">
+                          {client.version}
+                        </td>
 
-  <td className="p-4 text-sm whitespace-nowrap">
-    {client.entryprice}
-  </td>
+                        <td className="p-4 text-sm whitespace-nowrap overflow-hidden text-ellipsis">
+                          {client.entryprice}
+                        </td>
 
-  <td className="p-4 text-sm whitespace-nowrap">
-    {client.targetprice}
-  </td>
+                        <td className="p-4 text-sm whitespace-nowrap overflow-hidden text-ellipsis  md:table-cell">
+                          {client.targetprice}
+                        </td>
 
-  <td className="p-4 text-sm whitespace-nowrap">
-    {client.stoploss}
-  </td>
+                        <td className="p-4 text-sm whitespace-nowrap overflow-hidden text-ellipsis  lg:table-cell">
+                          {client.stoploss}
+                        </td>
 
-  <td className="p-4 text-sm whitespace-nowrap">
-    {client.riskratio}
-  </td>
+                        <td className="p-4 text-sm whitespace-nowrap overflow-hidden text-ellipsis  xl:table-cell">
+                          {client.riskratio}
+                        </td>
 
-  <td className="text-sm whitespace-nowrap truncate ">
-    {client.timedate}
-  </td>
+                        <td className="text-sm whitespace-nowrap overflow-hidden text-ellipsis ">
+                          {client.timedate}
+                        </td>
 
-  <td className="p-4 text-sm whitespace-nowrap truncate max-w-[120px]">
-    {client.validity}
-  </td>
+                        <td className="p-4 text-sm whitespace-nowrap overflow-hidden text-ellipsis  md:table-cell">
+                          {client.validity}
+                        </td>
 
-  <td className="p-4 text-sm whitespace-nowrap truncate max-w-[100px]">
-    {client.shared}
-  </td>
+                        <td className="p-4 text-sm whitespace-nowrap overflow-hidden text-ellipsis  lg:table-cell">
+                          {client.shared}
+                        </td>
 
-  <td
-    className={cn(
-      "p-4 text-sm font-semibold whitespace-nowrap",
-      client.status === "Hit" && "text-[#34C759]",
-      client.status === "Failed" && "text-[#FF3B30]",
-      client.status === "Inactive" && "text-yellow-500"
-    )}
-  >
-    {client.status}
-  </td>
+                        <td
+                          className={cn(
+                            "p-4 text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis",
+                            client.status === "Hit" && "text-[#34C759]",
+                            client.status === "Failed" && "text-[#FF3B30]",
+                            client.status === "Inactive" && "text-yellow-500",
+                          )}
+                        >
+                          {client.status}
+                        </td>
 
-  <td className="p-4 whitespace-nowrap">
-    <Button
-      variant="ghost"
-      size="icon"
-      className="h-8 w-8 text-[#667085] hover:text-[#101828] hover:bg-[#f9fafb]"
-    >
-      <Link href={`/editcall/${client.id}`}>
-        <Edit className="h-4 w-4" />
-      </Link>
-    </Button>
-  </td>
-</tr>
-                  ))
+                        <td className="p-4 whitespace-nowrap">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-[#667085] hover:text-[#101828] hover:bg-[#f9fafb]"
+                          >
+                            <Link href={`/editcall/${client.id}`}>
+                              <Edit className="h-4 w-4" />
+                            </Link>
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                    {/* EMPTY ROW FILLER */}
+                    {!loading &&
+                      paginatedClients.length < rowsPerPage &&
+                      Array.from({
+                        length: rowsPerPage - paginatedClients.length,
+                      }).map((_, i) => (
+                        <tr key={`empty-${i}`} className="h-[65px]">
+                          <td className="p-4" colSpan={13}>
+                            &nbsp;
+                          </td>
+                        </tr>
+                      ))}
+                  </>
                 )}
               </tbody>
             </table>
@@ -802,17 +895,15 @@ function SortableHeader({
   const isSelected = currentSortKey === sKey;
 
   return (
-   <th
-  className="p-2 py-4 text-left text-xs font-semibold text-[#667085] uppercase tracking-wider whitespace-nowrap"
->
-  <div className="flex items-center gap-1 whitespace-nowrap">
+    <th className="p-2 py-4 text-left text-xs font-semibold text-[#667085] uppercase tracking-wider whitespace-nowrap">
+      <div className="flex items-center gap-1 whitespace-nowrap">
         <span>{label}</span>
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className="h-6 w-6 ml-1 p-0 hover:bg-transparent"
+              className="h-6 w-6 hover:bg-transparent"
             >
               {!isSelected || !currentSortOrder ? (
                 <ArrowUpDown className="h-3 w-3 text-gray-400" />
