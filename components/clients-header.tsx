@@ -8,7 +8,6 @@ import { motion, LayoutGroup, AnimatePresence } from "framer-motion";
 import { useSession, signOut } from "next-auth/react";
 import { useRef, useEffect } from "react";
 
-
 type ClientsHeaderProps = {
   activeTab: "home" | "chat" | "connections" | "settings" | "notification";
 };
@@ -22,7 +21,7 @@ const tabs = [
 
 export function ClientsHeader({ activeTab }: ClientsHeaderProps) {
   const [open, setOpen] = useState(false);
-const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const [searchOpen, setSearchOpen] = useState(false);
   const isNotificationActive = activeTab === "notification";
@@ -31,19 +30,18 @@ const dropdownRef = useRef<HTMLDivElement>(null);
 
   const profileImage = session?.user?.image ?? "/select_client1.png";
   useEffect(() => {
-  function handleClickOutside(event: MouseEvent) {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target as Node)
-    ) {
-      setOpen(false);
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
     }
-  }
 
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => document.removeEventListener("mousedown", handleClickOutside);
-}, []);
-
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <header className=" bg-[#121212] border-b border-[#d0d5dd] sticky top-0 z-50 w-full h-[100px]">
@@ -162,71 +160,71 @@ const dropdownRef = useRef<HTMLDivElement>(null);
             </LayoutGroup>
           </div>
 
-         {/* RIGHT SECTION */}
-<div
-  ref={dropdownRef}
-  className="relative flex items-center gap-4 border border-[#888888] rounded-full h-[52px] pl-1 pr-3"
->
-  {/* Profile Image */}
-  <div
-    onClick={() => setOpen((prev) => !prev)}
-    className="relative w-10 h-10 rounded-full overflow-hidden border border-[#888888] cursor-pointer"
-  >
-    <Image
-      src={profileImage}
-      alt="profile"
-      fill
-      className="object-cover"
-      priority
-    />
-  </div>
+          {/* RIGHT SECTION */}
+          <div
+            ref={dropdownRef}
+            className="relative flex items-center gap-4 border border-[#888888] rounded-full h-[52px] pl-1 pr-3"
+          >
+            {/* Profile Image */}
+            <div
+              onClick={() => setOpen((prev) => !prev)}
+              className="relative w-10 h-10 rounded-full overflow-hidden border border-[#888888] cursor-pointer"
+            >
+              <Image
+                src={profileImage}
+                alt="profile"
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
 
-  {/* Arrow */}
-  <div className="relative w-5 h-5 cursor-pointer">
-    <Image
-      src="/downarrow_header.png"
-      alt="arrow"
-      fill
-      className="object-contain"
-      priority
-    />
-  </div>
+            {/* Arrow */}
+            <div className="relative w-5 h-5 cursor-pointer">
+              <Image
+                src="/downarrow_header.png"
+                alt="arrow"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
 
-  {/* DROPDOWN */}
-  <AnimatePresence>
-    {open && (
-      <motion.div
-        initial={{ opacity: 0, y: -5 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -5 }}
-        className="absolute right-0 top-[60px] w-48 bg-white rounded-xl shadow-lg border overflow-hidden z-50"
-      >
-        {/* Your Profile */}
-        <Link
-          href="/profile"
-          onClick={() => setOpen(false)}
-          className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
-        >
-          Your Profile
-        </Link>
+            {/* DROPDOWN */}
+            <AnimatePresence>
+              {open && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  className="absolute right-0 top-[60px] w-48 bg-white rounded-xl shadow-lg border overflow-hidden z-50"
+                >
+                  {/* Your Profile */}
+                  <Link
+                    href="/profile"
+                    onClick={() => setOpen(false)}
+                    className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Your Profile
+                  </Link>
 
-        <div className="border-t" />
+                  <div className="border-t" />
 
-        {/* Logout */}
-        <button
-          onClick={() =>
-            signOut({
-              callbackUrl: "/",
-            })
-          }
-          className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50"
-        >
-          Logout
-        </button>
-      </motion.div>
-    )}
-  </AnimatePresence>
-</div>
+                  {/* Logout */}
+                  <button
+                    onClick={() =>
+                      signOut({
+                        callbackUrl: "/",
+                      })
+                    }
+                    className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50"
+                  >
+                    Logout
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </header>

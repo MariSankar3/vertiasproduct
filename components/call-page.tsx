@@ -49,20 +49,24 @@ export function CallPage({
   const [zoomRight, setZoomRight] = useState(false);
 
   const searchContainerRef = useRef<HTMLDivElement>(null);
+  const suggestionsListRef = useRef<HTMLDivElement>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+
+  // Auto-scroll to active item
+  useEffect(() => {
+    if (activeIndex >= 0 && suggestionsListRef.current) {
+      const activeElement = suggestionsListRef.current.children[activeIndex] as HTMLElement;
+      if (activeElement) {
+        activeElement.scrollIntoView({ block: "nearest" });
+      }
+    }
+  }, [activeIndex]);
 
   const filteredSuggestions =
     searchSuggestions?.filter((s) =>
       s.toLowerCase().includes(searchValue.toLowerCase()),
     ) || [];
-
-  // const isActive = (page: ActivePage) =>
-  //   active === page
-  //     ? "bg-black"
-  //     : "bg-white"
-
-  // const iconInvert = (page: ActivePage) =>
-  //   active === page ? "invert" : ""
 
   const today = new Date();
   const next8Days = new Date();
@@ -72,20 +76,20 @@ export function CallPage({
   const formatDate = (date: Date) => date.toLocaleDateString("en-GB"); // DD/MM/YYYY
 
   const actionConfig =
-  active === "calls"
-    ? {
-        label: "+ New Calls",
-        href: "/newcall",
-      }
-    : active === "dashboard"
-    ? {
-        label: "+ Give Advice",
-        href: "/newclients",
-      }
-      : {
-          label: "+ New Client",
-          href: "/newclients",
-        };
+    active === "calls"
+      ? {
+          label: "+ New Calls",
+          href: "/newcall",
+        }
+      : active === "dashboard"
+        ? {
+            label: "+ Give Advice",
+            href: "/newclients",
+          }
+        : {
+            label: "+ New Client",
+            href: "/newclients",
+          };
 
   const navItems: {
     key: ActivePage;
@@ -336,11 +340,30 @@ export function CallPage({
                   onChange={(e) => {
                     setSearchValue(e.target.value);
                     setShowSuggestions(true);
+                    setActiveIndex(-1); // Reset on type
                     onSearch?.(e.target.value);
                   }}
                   onFocus={() => setShowSuggestions(true)}
                   onKeyDown={(e) => {
                     if (e.key === "Escape") closeSearch();
+                    if (!showSuggestions || !filteredSuggestions.length) return;
+
+                    if (e.key === "ArrowDown") {
+                      e.preventDefault();
+                      setActiveIndex((prev) =>
+                        prev < filteredSuggestions.length - 1 ? prev + 1 : prev,
+                      );
+                    } else if (e.key === "ArrowUp") {
+                      e.preventDefault();
+                      setActiveIndex((prev) => (prev > 0 ? prev - 1 : -1));
+                    } else if (e.key === "Enter" && activeIndex >= 0) {
+                      e.preventDefault();
+                      const selected = filteredSuggestions[activeIndex];
+                      setSearchValue(selected);
+                      onSearch?.(selected);
+                      setShowSuggestions(false);
+                      setActiveIndex(-1);
+                    }
                   }}
                 />
 
@@ -349,6 +372,7 @@ export function CallPage({
                     searchValue &&
                     filteredSuggestions.length > 0 && (
                       <motion.div
+                        ref={suggestionsListRef}
                         initial={{ opacity: 0, y: -8 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -8 }}
@@ -363,11 +387,15 @@ export function CallPage({
                         {filteredSuggestions.map((suggestion, index) => (
                           <div
                             key={index}
-                            className="
-            px-4 py-3 text-sm text-gray-300
-            hover:bg-[#A7E55C] hover:text-[#121212] cursor-pointer
-            transition-colors
-          "
+                            className={`
+            px-4 py-3 text-sm 
+            cursor-pointer transition-colors
+            ${
+              index === activeIndex
+                ? "bg-[#A7E55C] text-[#121212]"
+                : "text-gray-300 hover:bg-[#A7E55C] hover:text-[#121212]"
+            }
+          `}
                             onClick={(e) => {
                               e.stopPropagation();
                               setSearchValue(suggestion);
