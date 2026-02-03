@@ -6,6 +6,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx-js-style";
 import FileSaver from "file-saver";
+import { TableSkeletonRow } from "./callsrowskeleton";
 import {
   Edit,
   ChevronsUp,
@@ -24,8 +25,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import { count } from "console"
-
 import { callsData } from "@/lib/mock-data";
 
 const ROW_HEIGHT = 65;
@@ -41,7 +40,7 @@ type SortKey =
   | "entryprice"
   | "targetprice"
   | "stoploss"
-  | "riskratio"
+  | "riskratio" 
   | "status"
   | null;
 type SortOrder = "asc" | "desc" | null;
@@ -65,11 +64,8 @@ export function CallsTable({
 
   useEffect(() => {
     const calculateRows = () => {
-      // Calculate 60vh in pixels
       const containerHeight = window.innerHeight - 300;
-      // Available height for rows = Container Height - Header Height
       const availableHeight = containerHeight - HEADER_HEIGHT;
-      // Calculate max rows that can fit
       const rows = Math.floor(availableHeight / ROW_HEIGHT);
       // Ensure at least 1 row is shown
       setRowsPerPage(Math.max(rows, 1));
@@ -550,7 +546,7 @@ export function CallsTable({
                 <col className="w-[140px]" />
                 <col className="w-[80px]  md:table-column" />
                 <col className="w-[80px]  lg:table-column" />
-                <col className="w-[70px]" />
+                <col className="w-[75px]" />
                 <col className="w-[55px]" />
               </colgroup>
 
@@ -664,6 +660,16 @@ export function CallsTable({
                       setSortOrder(o);
                     }}
                   />
+                    {/* <SortableHeader
+                    label="Validity"
+                    sKey="validity"
+                    currentSortKey={sortKey}
+                    currentSortOrder={sortOrder}
+                    onSort={(k, o) => {
+                      setSortKey(k);
+                      setSortOrder(o);
+                    }}
+                  /> */}
                   <th className="text-left p-3 text-xs font-semibold text-[#667085] uppercase tracking-wider md:table-cell">
                     Validity
                   </th>
@@ -680,10 +686,19 @@ export function CallsTable({
                       }}
                     />
                   </th>
-
-                  <th className="text-left p-3 text-xs font-semibold text-[#667085] uppercase tracking-wider">
+              <SortableHeader
+                    label="Status"
+                    sKey="status"
+                    currentSortKey={sortKey}
+                    currentSortOrder={sortOrder}
+                    onSort={(k, o) => {
+                      setSortKey(k);
+                      setSortOrder(o);
+                    }}
+                  />
+                  {/* <th className="text-left p-3 text-xs font-semibold text-[#667085] uppercase tracking-wider">
                     Status
-                  </th>
+                  </th> */}
                   <th className="text-left p-3 text-xs font-semibold text-[#667085] uppercase tracking-wider">
                     More
                   </th>
@@ -895,17 +910,7 @@ export function CallsTable({
   );
 }
 
-function TableSkeletonRow() {
-  return (
-    <tr className="animate-pulse">
-      {Array.from({ length: 13 }).map((_, i) => (
-        <td key={i} className="p-4 py-6">
-          <div className="h-4 w-full rounded-md bg-gray-200" />
-        </td>
-      ))}
-    </tr>
-  );
-}
+
 
 function SortableHeader({
   label,

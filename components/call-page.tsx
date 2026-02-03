@@ -218,7 +218,7 @@ export function CallPage({
         {!searchOpen && (
           <Button
             variant="outline"
-            className="h-10 px-2 rounded-full ml-1 bg-[#121212]  text-white font-medium flex items-center overflow-hidden"
+            className="h-10 px-2 rounded-full ml-1 bg-[#121212] hover:bg-[#252525] hover:text-white  text-white font-medium flex items-center overflow-hidden"
           >
             <div
               onClick={(e) => {
@@ -256,8 +256,8 @@ export function CallPage({
               <Button
                 variant="outline"
                 size="icon"
-                className={`h-11 w-11 rounded-full cursor-pointer 
-                  ${hasActiveFilter ? "bg-[#a7e55c] text-[#121212]" : "bg-[#121212] text-white"}`}
+                className={`h-11 w-11 rounded-full cursor-pointer hover:bg-[#252525] hover:text-white
+                  ${hasActiveFilter ? "bg-[#a7e55c] text-[#121212] " : "bg-[#121212] text-white"}`}
                 onClick={() => {
                   // Filter currently implemented for clients and calls pages
                   if (active === "clients" || active === "calls") {
@@ -278,7 +278,7 @@ export function CallPage({
                   <Button
                     variant="outline"
                     size="icon"
-                    className="h-11 w-11 rounded-full bg-[#121212] text-white cursor-pointer ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:ring-0"
+                    className="h-11 w-11 rounded-full bg-[#121212] text-white cursor-pointer ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:ring-0 hover:bg-[#252525] hover:text-white"
                   >
                     <Download className="h-5 w-5" />
                   </Button>
@@ -399,7 +399,7 @@ export function CallPage({
               }}
               className={`
     h-11 w-11 rounded-full shrink-0
-    transition-colors duration-100 cursor-pointer 
+    transition-colors duration-100 cursor-pointer hover:bg-[#252525] hover:text-white
     ${
       isTyping
         ? "bg-black text-white h-12 w-12 mr-[1.5px]"
