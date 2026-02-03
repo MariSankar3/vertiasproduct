@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { ClientsHeader } from "@/components/clients-header"
-import { Messager } from "@/components/message"
+import { Messager } from "./components/message"
 import { ClientLeftSideBar } from "@/components/client-left-sidebar"
 
 export const metadata: Metadata = {

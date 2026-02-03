@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { ClientsHeader } from "@/components/clients-header"
-import { Activity } from "@/components/activity"
+import { Activity } from "./components/activity"
 import { ClientLeftSideBar } from "@/components/client-left-sidebar"
 import { clientsData } from "@/lib/mock-data"
 

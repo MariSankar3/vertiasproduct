@@ -3,28 +3,34 @@
 import { createContext, useContext, useState, ReactNode, useCallback, useMemo } from "react";
 
 interface PageContextType {
-  registerDownloadHandler: (handler: () => void) => void;
-  triggerDownload: () => void;
+  registerDownloadHandler: (handler: (format: "pdf" | "excel") => void) => void;
+  triggerDownload: (format: "pdf" | "excel") => void;
 }
 
 const PageContext = createContext<PageContextType | undefined>(undefined);
 
 export function PageProvider({ children }: { children: ReactNode }) {
-  const [downloadHandler, setDownloadHandler] = useState<(() => void) | null>(
-    null,
+  const [downloadHandler, setDownloadHandler] = useState<
+    ((format: "pdf" | "excel") => void) | null
+  >(null);
+
+  const registerDownloadHandler = useCallback(
+    (handler: (format: "pdf" | "excel") => void) => {
+      setDownloadHandler(() => handler);
+    },
+    [],
   );
 
-  const registerDownloadHandler = useCallback((handler: () => void) => {
-    setDownloadHandler(() => handler);
-  }, []);
-
-  const triggerDownload = useCallback(() => {
-    if (downloadHandler) {
-      downloadHandler();
-    } else {
-      console.warn("No download handler registered");
-    }
-  }, [downloadHandler]);
+  const triggerDownload = useCallback(
+    (format: "pdf" | "excel") => {
+      if (downloadHandler) {
+        downloadHandler(format);
+      } else {
+        console.warn("No download handler registered");
+      }
+    },
+    [downloadHandler],
+  );
 
   const value = useMemo(
     () => ({ registerDownloadHandler, triggerDownload }),

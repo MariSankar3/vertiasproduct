@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { SignInForm } from "@/components/signin-form"
+import { SignInForm } from "./components/signin-form"
 import { HeroSection } from "@/components/hero-section"
 
 export const metadata: Metadata = {

@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { ClientsHeader } from "@/components/clients-header"
-import { EditCall } from "@/components/edit-call"
+import { EditCall } from "./components/edit-call"
 
 export const metadata: Metadata = {
     title: "Edit Call - Ethereal Design",

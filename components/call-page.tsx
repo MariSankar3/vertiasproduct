@@ -6,6 +6,13 @@ import { Calendar, Download, Filter, Search, Users } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePage } from "./page-context";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 type ActivePage = "dashboard" | "clients" | "log" | "calls";
 
 export function CallPage({
@@ -266,16 +273,35 @@ export function CallPage({
           {/* DOWNLOAD */}
           {!searchOpen && (
             <motion.div layout>
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-11 w-11 rounded-full bg-[#121212] text-white cursor-pointer"
-                onClick={() => {
-                  triggerDownload();
-                }}
-              >
-                <Download className="h-5 w-5" />
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-11 w-11 rounded-full bg-[#121212] text-white cursor-pointer ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:ring-0"
+                  >
+                    <Download className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-48 bg-white border border-gray-200 rounded-xl shadow-lg"
+                  align="end"
+                  sideOffset={8}
+                >
+                  <DropdownMenuItem
+                    onClick={() => triggerDownload("pdf")}
+                    className="cursor-pointer text-sm font-medium text-gray-700 hover:bg-gray-50 focus:bg-gray-50 py-2.5 px-3 rounded-lg flex items-center gap-2"
+                  >
+                    Export as PDF
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => triggerDownload("excel")}
+                    className="cursor-pointer text-sm font-medium text-gray-700 hover:bg-gray-50 focus:bg-gray-50 py-2.5 px-3 rounded-lg flex items-center gap-2"
+                  >
+                    Export as Excel
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </motion.div>
           )}
 

@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import { ClientsHeader } from "@/components/clients-header"
-import { CallPage } from "@/components/call-page"
-import { CallsTable } from "@/components/calls-table"
+import { CallsTable } from "./components/calls-table"
 
 export const metadata: Metadata = {
   title: "Clients - Ethereal Design",

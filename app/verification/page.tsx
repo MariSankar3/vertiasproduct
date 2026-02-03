@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { HeroSection } from "@/components/hero-section"
-import { Verification } from "@/components/verification"
+import { Verification } from "./components/verification"
 
 export const metadata: Metadata = {
   title: "Sign In - Ethereal Design",
