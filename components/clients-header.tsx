@@ -49,8 +49,7 @@ export function ClientsHeader({ activeTab }: ClientsHeaderProps) {
         <div className="flex items-center justify-between w-full">
           {/* LEFT SECTION */}
           <div className="flex items-center gap-8">
-            {/* LOGO — FIXED SIZE (NO SHAKE) */}
-            <div className="relative w-12 h-12 shrink-0">
+            <div className="relative w-12 h-12 min-w-12 max-w-12 flex-none">
               <Image
                 src="/verita_logo_white.png"
                 alt="Logo"
