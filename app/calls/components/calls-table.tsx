@@ -47,7 +47,6 @@ type SortKey =
 
 type SortOrder = "asc" | "desc" | null;
 
-
 type CallsTableProps = {
   searchQuery?: string;
   statusFilters?: string[];
@@ -322,13 +321,13 @@ export function CallsTable({
           : sharedB.localeCompare(sharedA);
       }
       if (sortKey === "validity") {
-  const validityA = a.validity?.toLowerCase() ?? "";
-  const validityB = b.validity?.toLowerCase() ?? "";
+        const validityA = a.validity?.toLowerCase() ?? "";
+        const validityB = b.validity?.toLowerCase() ?? "";
 
-  return sortOrder === "asc"
-    ? validityA.localeCompare(validityB)
-    : validityB.localeCompare(validityA);
-}
+        return sortOrder === "asc"
+          ? validityA.localeCompare(validityB)
+          : validityB.localeCompare(validityA);
+      }
 
       return 0;
     });
@@ -661,7 +660,6 @@ export function CallsTable({
                     />
                   </th>
 
-
                   <SortableHeader
                     label="Call Time / Date"
                     sKey="timedate"
@@ -672,7 +670,7 @@ export function CallsTable({
                       setSortOrder(o);
                     }}
                   />
-                    <SortableHeader
+                  <SortableHeader
                     label="Validity"
                     sKey="validity"
                     currentSortKey={sortKey}
@@ -698,7 +696,7 @@ export function CallsTable({
                       }}
                     />
                   </th>
-              <SortableHeader
+                  <SortableHeader
                     label="Status"
                     sKey="status"
                     currentSortKey={sortKey}
@@ -708,9 +706,6 @@ export function CallsTable({
                       setSortOrder(o);
                     }}
                   />
-                  {/* <th className="text-left p-3 text-xs font-semibold text-[#667085] uppercase tracking-wider">
-                    Status
-                  </th> */}
                   <th className="text-left p-3 text-xs font-semibold text-[#667085] uppercase tracking-wider">
                     More
                   </th>
@@ -921,8 +916,6 @@ export function CallsTable({
     </motion.div>
   );
 }
-
-
 
 function SortableHeader({
   label,

@@ -894,7 +894,6 @@ export function ClientsTable({
       )}
       <AnimatePresence>
         {showCustomize && (
-          // <motion.div className="fixed inset-0 z-50 flex justify-end">
           <motion.div
             initial={{ x: "110%" }}
             animate={{ x: 0 }}
@@ -904,6 +903,7 @@ export function ClientsTable({
               ease: "easeInOut",
               duration: 0.5,
             }}
+            style={{ willChange: "transform" }}
             className="fixed
         top-0
         right-0
@@ -913,7 +913,7 @@ export function ClientsTable({
         bg-white
         border-l
         p-6
-        rounded-2xl"
+        rounded-2xl shadow-2xl"
           >
             <div className="flex items-center justify-between mb-4">
               <div>
