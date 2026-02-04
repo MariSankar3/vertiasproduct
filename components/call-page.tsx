@@ -427,7 +427,8 @@ export function CallPage({
               }}
               className={`
     h-11 w-11 rounded-full shrink-0
-    transition-colors duration-100 cursor-pointer hover:bg-[#252525] hover:text-white
+    cursor-pointer hover:bg-[#252525] hover:text-white
+    ${searchOpen ? "transition-colors duration-100" : "transition-none"}
     ${
       isTyping
         ? "bg-black text-white h-12 w-12 mr-[1.5px]"

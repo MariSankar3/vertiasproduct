@@ -446,6 +446,7 @@ export const clientsData = [
         state:"TamilNadu",
         kycvalidated:"Yes",
     },
+    
     {
         id: "CL0001247",
         name: "Benjamin Harris",

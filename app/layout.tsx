@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Nunito } from "next/font/google"
 import "./globals.css"
 import Providers from "./providers"
+// import { SmoothScroll } from "@/components/smooth-scroll"
 
 const nunito = Nunito({
   subsets: ["latin"],

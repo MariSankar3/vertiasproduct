@@ -37,7 +37,7 @@ import FileSaver from "file-saver";
 // const clients = [] ?? clientsData
 const clients = clientsData ?? [];
 
-const ROW_HEIGHT = 70;
+const ROW_HEIGHT = 60;
 const HEADER_HEIGHT = 56;
 
 const statusColors: Record<string, string> = {
@@ -635,10 +635,10 @@ export function ClientsTable({
           </button>
         </div>
         <div
-          className="bg-white rounded-2xl border border-[#eaecf0] 
+          className="rounded-2xl border border-[#eaecf0] 
                 h-[calc(100vh-310px)] flex flex-col relative"
         >
-          <div className="overflow-x-auto scrollbar-x-thin">
+          <div className="overflow-x-auto scrollbar-x-thin flex-1 w-full">
             {!loading && sortedClients.length === 0 && (
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div className="flex flex-col items-center text-center">
@@ -771,7 +771,7 @@ export function ClientsTable({
                   }).map((_, i) => (
                     <tr key={`empty-${i}`} className="">
                       <td
-                        className="p-4"
+                        className=""
                         colSpan={orderedVisibleColumns.length + 1}
                       >
                         &nbsp;
@@ -1139,15 +1139,15 @@ function renderCellContent(client: any, colKey: string) {
   switch (colKey) {
     case "id":
       return (
-        <td className="px-4 py-5.1 text-sm text-[#101828]">{client.id}</td>
+        <td className="px-4 py-1 text-sm text-[#101828]">{client.id}</td>
       );
     case "name":
       return (
-        <td className="px-4 py-3 text-sm text-[#101828]">{client.name}</td>
+        <td className="px-4 py-1 text-sm text-[#101828]">{client.name}</td>
       );
     case "status":
       return (
-        <td className="px-4 py-3">
+        <td className="px-4 py-1">
           <span
             className={cn(
               "inline-flex items-center px-3 py-1 rounded-md text-xs font-medium border",
@@ -1160,7 +1160,7 @@ function renderCellContent(client: any, colKey: string) {
       );
     case "riskScore":
       return (
-        <td className="px-4 py-3">
+        <td className="px-4 py-1">
           <div className="flex items-center gap-3">
             <span className="text-sm border rounded-md px-2">
               {client.riskScore}
@@ -1170,7 +1170,7 @@ function renderCellContent(client: any, colKey: string) {
       );
     case "riskCategory":
       return (
-        <td className="px-4 py-3">
+        <td className="px-4 py-1">
           <div className="flex items-center gap-3">
             <span className="text-sm border rounded-md px-2">
               {client.riskCategory}
@@ -1180,7 +1180,7 @@ function renderCellContent(client: any, colKey: string) {
       );
     case "email":
       return (
-        <td className="px-4 py-3 text-sm text-[#475467]">{client.email}</td>
+        <td className="px-4 py-1 text-sm text-[#475467]">{client.email}</td>
       );
     case "phone":
       return <td className="text-sm text-[#475467]">{client.phone}</td>;
@@ -1204,7 +1204,7 @@ function renderCellContent(client: any, colKey: string) {
       );
     case "actions":
       return (
-        <td className="px-6 py-3">
+        <td className="px-6 py-[7px]">
           <Button variant="ghost" size="icon">
             <Link
               href={`/client-profile/${client.id}`}
