@@ -1,9 +1,8 @@
-import Image from "next/image"
+import Image from "next/image";
 
 export function HeroSection() {
   return (
     <div className="bg-[#d8d8d8] flex flex-col justify-between lg:p-6 max-h-screen">
-      
       <div className="mb-1">
         <Image
           src="/verita_logo_dark.png"
@@ -22,20 +21,25 @@ export function HeroSection() {
           Missing Records
         </h1>
         <p className="text-[14px] font-semibold text-[#1d2939] max-w-[96%] mx-auto leading-relaxed">
-          Our software is designed specifically for SEBI-regulated firms. It automatically captures and files all interactions—calls, messages, and documents—linking them directly to the right client. Get your complete audit trail instantly. Stay compliant, stay protected.
+          Our software is designed specifically for SEBI-regulated firms. It
+          automatically captures and files all interactions—calls, messages, and
+          documents—linking them directly to the right client. Get your complete
+          audit trail instantly. Stay compliant, stay protected.
         </p>
       </div>
 
       <div className="mt-1 relative w-full aspect-[4/2]">
         <Image
-          src="/sign_in_1.png"
+          src="/sign_in_1.webp"
           alt="Product Screenshots"
-          fill
+          width={900}
+          height={450}
           priority
+          loading="eager"
+          sizes="(max-width: 768px) 100vw, 900px"
           className="object-contain"
         />
       </div>
-
     </div>
-  )
+  );
 }
