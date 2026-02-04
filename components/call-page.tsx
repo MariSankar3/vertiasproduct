@@ -31,10 +31,12 @@ export function CallPage({
   hasActiveFilter?: boolean;
 }) {
   const closeSearch = () => {
+    setZoomRight(true);
     setSearchOpen(false);
     setShowSuggestions(false);
     setSearchValue("");
     onSearch?.(""); // reset results
+    setTimeout(() => setZoomRight(false), 250);
   };
 
   const { triggerDownload } = usePage();
@@ -216,7 +218,7 @@ export function CallPage({
 
       <motion.div
         animate={{ scale: zoomRight ? 1.05 : 1 }}
-        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        transition={{ type: "spring", stiffness: 150, damping: 25 }}
         className="flex items-center gap-3 bg-[#000] h-[50px] rounded-full"
       >
         {!searchOpen && (
