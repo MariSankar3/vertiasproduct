@@ -218,7 +218,7 @@ export function CallPage({
 
       <motion.div
         animate={{ scale: zoomRight ? 1.05 : 1 }}
-        transition={{ type: "spring", stiffness: 150, damping: 25 }}
+        transition={{ type: "spring", stiffness: 250, damping: 25 }}
         className="flex items-center gap-3 bg-[#000] h-[50px] rounded-full"
       >
         {!searchOpen && (
