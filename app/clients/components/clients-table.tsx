@@ -1241,7 +1241,7 @@ function renderCellContent(client: any, colKey: string) {
       return <td className="px-4 text-sm text-[#475467]">{client.state}</td>;
     case "kycvalidated":
       return (
-        <td className="px-4  text-sm text-[#475467]">{client.kycvalidated}</td>
+        <td className="pl-12 text-sm text-[#475467]">{client.kycvalidated}</td>
       );
     case "actions":
       return (

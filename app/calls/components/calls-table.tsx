@@ -535,18 +535,18 @@ export function CallsTable({
           <div className="max-h-[calc(100vh-310px)] ">
             <table className="w-full table-fixed">
               <colgroup>
-                <col className="w-[100px]" />
-                <col className="w-[120px]" />
-                <col className="w-[90px]  lg:table-column" />
-                <col className="w-[90px]  xl:table-column" />
                 <col className="w-[110px]" />
-                <col className="w-[120px]  md:table-column" />
+                <col className="w-[145px]" />
                 <col className="w-[100px]  lg:table-column" />
-                <col className="w-[100px]  xl:table-column" />
-                <col className="w-[165px]" />
-                <col className="w-[80px]  md:table-column" />
-                <col className="w-[80px]  lg:table-column" />
-                <col className="w-[75px]" />
+                <col className="w-[90px]  xl:table-column" />
+                <col className="w-[120px]" />
+                <col className="w-[130px]  md:table-column" />
+                <col className="w-[110px]  lg:table-column" />
+                <col className="w-[110px]  xl:table-column" />
+                <col className="w-[175px]" />
+                <col className="w-[85px]  md:table-column" />
+                <col className="w-[90px]  lg:table-column" />
+                <col className="w-[80px]" />
                 <col className="w-[55px]" />
               </colgroup>
 
