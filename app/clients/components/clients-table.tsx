@@ -677,51 +677,57 @@ export function ClientsTable({
                       }}
                     />
                   </th>
-                  {orderedVisibleColumns.map((colKey) => {
-                    const colDef = ALL_COLUMNS.find((c) => c.key === colKey);
+                  {orderedVisibleColumns
+                    .filter((colKey) => colKey !== "actions")
+                    .map((colKey) => {
+                      const colDef = ALL_COLUMNS.find((c) => c.key === colKey);
 
-                    // Check if column is sortable
-                    const isSortable = [
-                      "id",
-                      "name",
-                      "riskScore",
-                      "riskCategory",
-                      "email",
-                      "dob",
-                      "lastlogin",
-                      "lastcall",
-                      "city",
-                      "state",
-                      "status",
-                    ].includes(colKey);
+                      // Check if column is sortable
+                      const isSortable = [
+                        "id",
+                        "name",
+                        "riskScore",
+                        "riskCategory",
+                        "email",
+                        "dob",
+                        "lastlogin",
+                        "lastcall",
+                        "city",
+                        "state",
+                        "status",
+                      ].includes(colKey);
 
-                    if (isSortable) {
+                      if (isSortable) {
+                        return (
+                          <SortableHeader
+                            key={colKey}
+                            label={colDef?.label || colKey}
+                            sKey={colKey as SortKey}
+                            currentSortKey={sortKey}
+                            currentSortOrder={sortOrder}
+                            width={(colDef as any)?.width}
+                            onSort={(k, o) => {
+                              setSortKey(k);
+                              setSortOrder(o);
+                            }}
+                          />
+                        );
+                      }
+
                       return (
-                        <SortableHeader
+                        <th
                           key={colKey}
-                          label={colDef?.label || colKey}
-                          sKey={colKey as SortKey}
-                          currentSortKey={sortKey}
-                          currentSortOrder={sortOrder}
-                          width={(colDef as any)?.width}
-                          onSort={(k, o) => {
-                            setSortKey(k);
-                            setSortOrder(o);
-                          }}
-                        />
+                          className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider"
+                          style={{ width: (colDef as any)?.width }}
+                        >
+                          {colDef?.label}
+                        </th>
                       );
-                    }
-
-                    return (
-                      <th
-                        key={colKey}
-                        className="text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider"
-                        style={{ width: (colDef as any)?.width }}
-                      >
-                        {colDef?.label}
-                      </th>
-                    );
-                  })}
+                    })}
+                  {/* Fixed Actions Column */}
+                  <th className="sticky right-0 bg-[#F7F7F7] z-20 text-left p-4 text-xs font-semibold text-[#101828] uppercase tracking-wider w-[80px] shadow-[-5px_0px_10px_-5px_rgba(0,0,0,0.1)]">
+                    Action
+                  </th>
                 </tr>
               </thead>
 
@@ -755,11 +761,46 @@ export function ClientsTable({
                               }}
                             />
                           </td>
-                          {orderedVisibleColumns.map((colKey) => (
-                            <div key={colKey} className="contents">
-                              {renderCellContent(client, colKey)}
+                          {orderedVisibleColumns
+                            .filter((colKey) => colKey !== "actions")
+                            .map((colKey) => (
+                              <div key={colKey} className="contents">
+                                {renderCellContent(client, colKey)}
+                              </div>
+                            ))}
+                          {/* Sticky Actions Cell */}
+                          <td className="sticky right-0 bg-white group-hover:bg-[#f9fafb] z-10 px-6 py-[7px] w-[80px] shadow-[-5px_0px_10px_-5px_rgba(0,0,0,0.1)]">
+                            <div className="flex items-center">
+                              {renderCellContent(client, "actions")?.props
+                                .children || (
+                                <Button variant="ghost" size="icon">
+                                  <Link
+                                    href={`/client-profile/${client.id}`}
+                                    className="flex items-center gap-2"
+                                  >
+                                    <span
+                                      className="
+                                        text-[14px] text-[#535353]
+                                        opacity-0 translate-x-2
+                                        group-hover:opacity-100 group-hover:translate-x-0
+                                        transition-all duration-200
+                                        whitespace-nowrap
+                                      "
+                                    >
+                                      View
+                                    </span>
+                                    <ArrowRight
+                                      className="
+                                        h-4 w-4
+                                        transition-transform duration-200
+                                        group-hover:translate-x-1
+                                      "
+                                    />
+                                  </Link>
+                                </Button>
+                              )}
                             </div>
-                          ))}
+                          </td>
                         </div>
                       </tr>
                     ))}
