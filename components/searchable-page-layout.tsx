@@ -16,6 +16,8 @@ interface SearchablePageLayoutProps {
     searchQuery: string;
     statusFilters?: string[];
     categoryFilters?: string[];
+    segmentFilters?: string[];
+    validityFilters?: string[];
   }>;
 }
 const statusStyles: Record<string, string> = {
@@ -38,6 +40,8 @@ export function SearchablePageLayout({
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [statusFilters, setStatusFilters] = useState<string[]>([]);
   const [categoryFilters, setCategoryFilters] = useState<string[]>([]);
+  const [segmentFilters, setSegmentFilters] = useState<string[]>([]);
+  const [validityFilters, setValidityFilters] = useState<string[]>([]);
 
   const toggleStatus = (value: string) => {
     setStatusFilters((prev) =>
@@ -51,9 +55,23 @@ export function SearchablePageLayout({
     );
   };
 
+  const toggleSegment = (value: string) => {
+    setSegmentFilters((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
+    );
+  };
+
+  const toggleValidity = (value: string) => {
+    setValidityFilters((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
+    );
+  };
+
   const handleClear = () => {
     setStatusFilters([]);
     setCategoryFilters([]);
+    setSegmentFilters([]);
+    setValidityFilters([]);
     setIsFilterOpen(false);
   };
 
@@ -72,9 +90,15 @@ export function SearchablePageLayout({
     active === "clients"
       ? ["Rathi", "AtiRathi", "MahaRathi"]
       : ["Long", "Short"];
+  
+  const segmentOptions = ["Equity", "Options", "Commodity", "Futures"];
+  const validityOptions = ["Intraday", "Short Term", "Positional", "Long Term"];
 
   const hasActiveFilter =
-    statusFilters.length > 0 || categoryFilters.length > 0;
+    statusFilters.length > 0 ||
+    categoryFilters.length > 0 ||
+    segmentFilters.length > 0 ||
+    validityFilters.length > 0;
 
   return (
     <>
@@ -92,11 +116,13 @@ export function SearchablePageLayout({
           searchQuery={searchQuery}
           statusFilters={statusFilters}
           categoryFilters={categoryFilters}
+          segmentFilters={segmentFilters}
+          validityFilters={validityFilters}
         />
 
         {showFilter && isFilterOpen && (
           <div className="fixed inset-0 z-40 flex items-start justify-center bg-black/30 pt-24">
-            <div className="w-full max-w-md rounded-3xl bg-white shadow-2xl mt-25 ml-110">
+            <div className="w-full max-w-md rounded-3xl bg-white shadow-2xl mt-22 ml-110">
               <div className="flex items-center justify-between px-6 pt-6">
                 <h2 className="text-2xl font-semibold text-[#101828]">
                   Filter
@@ -115,7 +141,7 @@ export function SearchablePageLayout({
               <div className="space-y-6 px-6 py-6">
                 <div>
                   <p className="mb-3 text-sm font-semibold text-[#101828]">
-                    {active === "clients" ? "Status" : "Call Status"}
+                    {active === "clients" ? "Status" : "Status"}
                   </p>
                   <div className="grid grid-cols-3 gap-y-6 gap-x-2">
                     {statusOptions.map((option) => (
@@ -164,6 +190,58 @@ export function SearchablePageLayout({
                     ))}
                   </div>
                 </div>
+
+                {/* SEGMENT (Calls Only) */}
+                {active === "calls" && (
+                  <div>
+                    <p className="mb-3 text-sm font-semibold text-[#101828]">
+                      Segment
+                    </p>
+                    <div className="grid grid-cols-3 gap-y-6 gap-x-2">
+                      {segmentOptions.map((option) => (
+                        <label
+                          key={option}
+                          className="flex cursor-pointer items-center gap-3"
+                        >
+                          <Checkbox
+                            className="cursor-pointer border-black border-1"
+                            checked={segmentFilters.includes(option)}
+                            onCheckedChange={() => toggleSegment(option)}
+                          />
+                          <span className="inline-flex items-center rounded-full border border-gray-200 px-3 py-1 text-xs font-medium text-[#101828]">
+                            {option}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* VALIDITY (Calls Only) */}
+                {active === "calls" && (
+                  <div>
+                    <p className="mb-3 text-sm font-semibold text-[#101828]">
+                      Validity
+                    </p>
+                    <div className="grid grid-cols-3 gap-y-6 gap-x-2">
+                      {validityOptions.map((option) => (
+                        <label
+                          key={option}
+                          className="flex cursor-pointer items-center gap-3"
+                        >
+                          <Checkbox
+                            className="cursor-pointer border-black border-1"
+                            checked={validityFilters.includes(option)}
+                            onCheckedChange={() => toggleValidity(option)}
+                          />
+                          <span className="inline-flex items-center rounded-full border border-gray-200 px-3 py-1 text-xs font-medium text-[#101828]">
+                            {option}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="mt-2 flex items-center justify-between border-t border-gray-200 px-6 py-4">

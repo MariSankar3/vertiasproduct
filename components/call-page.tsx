@@ -34,8 +34,8 @@ export function CallPage({
     setZoomRight(true);
     setSearchOpen(false);
     setShowSuggestions(false);
-    setSearchValue("");
-    onSearch?.(""); // reset results
+    // setSearchValue("");
+    // onSearch?.(""); // reset results
     setTimeout(() => setZoomRight(false), 250);
   };
 

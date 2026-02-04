@@ -51,12 +51,16 @@ type CallsTableProps = {
   searchQuery?: string;
   statusFilters?: string[];
   categoryFilters?: string[];
+  segmentFilters?: string[];
+  validityFilters?: string[];
 };
 
 export function CallsTable({
   searchQuery = "",
   statusFilters = [],
   categoryFilters = [],
+  segmentFilters = [],
+  validityFilters = [],
 }: CallsTableProps) {
   const [activeTab, setActiveTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
@@ -137,6 +141,16 @@ export function CallsTable({
       return false;
     }
 
+    // New Filter: Segment
+    if (segmentFilters.length > 0 && !segmentFilters.includes(client.segment)) {
+      return false;
+    }
+
+    // New Filter: Validity
+    if (validityFilters.length > 0 && !validityFilters.includes(client.validity)) {
+      return false;
+    }
+
     // Search Filter
     if (
       searchQuery &&
@@ -165,6 +179,16 @@ export function CallsTable({
 
     // Header filter: call type (Buy / Sell)
     if (categoryFilters.length > 0 && !categoryFilters.includes(client.call)) {
+      return false;
+    }
+
+    // New Filter: Segment
+    if (segmentFilters.length > 0 && !segmentFilters.includes(client.segment)) {
+      return false;
+    }
+
+    // New Filter: Validity
+    if (validityFilters.length > 0 && !validityFilters.includes(client.validity)) {
       return false;
     }
 
