@@ -7,7 +7,7 @@ type TableSkeletonRowProps = {
 
 export function TableSkeletonRow({
   columns = 13,
-  rowHeightClass = "py-6",
+  rowHeightClass = "py-[17px]",
 }: TableSkeletonRowProps) {
   return (
     <tr className="animate-pulse">

@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { callsData } from "@/lib/mock-data";
 
-const ROW_HEIGHT = 65;
+const ROW_HEIGHT = 50;
 const HEADER_HEIGHT = 56;
 
 type SortKey =
@@ -531,7 +531,7 @@ export function CallsTable({
         </div>
       </div>
       <div className="bg-white border border-[#eaecf0] h-[calc(100vh-310px)] flex flex-col rounded-b-2xl">
-        <div className="overflow-x-auto scrollbar-x-thin">
+        <div className="overflow-x-auto scrollbar-x-thin flex-1 w-full">
           <div className="max-h-[calc(100vh-310px)] ">
             <table className="w-full table-fixed">
               <colgroup>
@@ -543,7 +543,7 @@ export function CallsTable({
                 <col className="w-[120px]  md:table-column" />
                 <col className="w-[100px]  lg:table-column" />
                 <col className="w-[100px]  xl:table-column" />
-                <col className="w-[140px]" />
+                <col className="w-[165px]" />
                 <col className="w-[80px]  md:table-column" />
                 <col className="w-[80px]  lg:table-column" />
                 <col className="w-[75px]" />
@@ -741,13 +741,13 @@ export function CallsTable({
                       <tr
                         key={index}
                         className={cn(
-                          "hover:bg-[#f9fafb] transition h-[65px]",
+                          "hover:bg-[#f9fafb] transition h-[50px]",
                           index === paginatedClients.length - 1 && "border-0",
                         )}
                       >
                         <td
                           className={cn(
-                            "p-4 text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis",
+                            "px-4 py-1 text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis",
                             client.call === "Long" && "text-[#34C759]",
                             client.call === "Short" && "text-[#FF3B30]",
                           )}
@@ -755,49 +755,49 @@ export function CallsTable({
                           {client.call}
                         </td>
 
-                        <td className="p-4 text-sm font-medium text-[#101828] whitespace-nowrap overflow-hidden text-ellipsis">
+                        <td className="px-4 py-1 text-sm font-medium text-[#101828] whitespace-nowrap overflow-hidden text-ellipsis">
                           {client.name}
                         </td>
 
-                        <td className="p-4 text-sm whitespace-nowrap overflow-hidden text-ellipsis  lg:table-cell">
+                        <td className="px-4 py-1 text-sm whitespace-nowrap overflow-hidden text-ellipsis  lg:table-cell">
                           {client.segment}
                         </td>
 
-                        <td className="p-4 text-sm font-medium text-[#101828] whitespace-nowrap overflow-hidden text-ellipsis xl:table-cell">
+                        <td className="px-4 py-1 text-sm font-medium text-[#101828] whitespace-nowrap overflow-hidden text-ellipsis xl:table-cell">
                           {client.version}
                         </td>
 
-                        <td className="p-4 text-sm whitespace-nowrap overflow-hidden text-ellipsis">
+                        <td className="px-4 py-1 text-sm whitespace-nowrap overflow-hidden text-ellipsis">
                           {client.entryprice}
                         </td>
 
-                        <td className="p-4 text-sm whitespace-nowrap overflow-hidden text-ellipsis  md:table-cell">
+                        <td className="px-4 py-1 text-sm whitespace-nowrap overflow-hidden text-ellipsis  md:table-cell">
                           {client.targetprice}
                         </td>
 
-                        <td className="p-4 text-sm whitespace-nowrap overflow-hidden text-ellipsis  lg:table-cell">
+                        <td className="px-4 py-1 text-sm whitespace-nowrap overflow-hidden text-ellipsis  lg:table-cell">
                           {client.stoploss}
                         </td>
 
-                        <td className="p-4 text-sm whitespace-nowrap overflow-hidden text-ellipsis  xl:table-cell">
+                        <td className="px-4 py-1 text-sm whitespace-nowrap overflow-hidden text-ellipsis  xl:table-cell">
                           {client.riskratio}
                         </td>
 
-                        <td className="text-sm whitespace-nowrap overflow-hidden text-ellipsis ">
+                        <td className="px-1 py-1 text-sm whitespace-nowrap overflow-hidden text-ellipsis ">
                           {client.timedate}
                         </td>
 
-                        <td className="p-4 text-sm whitespace-nowrap overflow-hidden text-ellipsis  md:table-cell">
+                        <td className="pl-2 py-1 text-sm whitespace-nowrap overflow-hidden text-ellipsis  md:table-cell">
                           {client.validity}
                         </td>
 
-                        <td className="p-4 text-sm whitespace-nowrap overflow-hidden text-ellipsis  lg:table-cell">
+                        <td className="px-4 py-1 text-sm whitespace-nowrap overflow-hidden text-ellipsis  lg:table-cell">
                           {client.shared}
                         </td>
 
                         <td
                           className={cn(
-                            "p-4 text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis",
+                            "px-4 py-1 text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis",
                             client.status === "Hit" && "text-[#34C759]",
                             client.status === "Failed" && "text-[#FF3B30]",
                             client.status === "Inactive" && "text-yellow-500",
@@ -806,7 +806,7 @@ export function CallsTable({
                           {client.status}
                         </td>
 
-                        <td className="p-4 whitespace-nowrap">
+                        <td className="px-4 py-1 whitespace-nowrap">
                           <Button
                             variant="ghost"
                             size="icon"
@@ -825,8 +825,8 @@ export function CallsTable({
                       Array.from({
                         length: rowsPerPage - paginatedClients.length,
                       }).map((_, i) => (
-                        <tr key={`empty-${i}`} className="h-[65px]">
-                          <td className="p-4" colSpan={13}>
+                        <tr key={`empty-${i}`} className="h-[50px]">
+                          <td className="" colSpan={13}>
                             &nbsp;
                           </td>
                         </tr>

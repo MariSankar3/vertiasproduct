@@ -158,7 +158,7 @@ export function ClientsTable({
 
   useEffect(() => {
     const calculateRows = () => {
-      const containerHeight = window.innerHeight * 0.7;
+      const containerHeight = window.innerHeight - 200;
       const availableHeight = containerHeight - HEADER_HEIGHT;
       const rows = Math.floor(availableHeight / ROW_HEIGHT);
       setRowsPerPage(Math.max(rows, 1));
