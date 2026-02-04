@@ -2,9 +2,10 @@ import Image from "next/image";
 
 export function HeroSection() {
   return (
-    <div className="bg-[#d8d8d8] flex flex-col justify-between lg:p-6 min-h-screen">
+   <div className="bg-[#d8d8d8] flex flex-col justify-between lg:p-6 max-h-screen overflow-x-hidden">
+
       <div className="mb-1">
-       <div className="w-[36px] h-[36px] relative">
+       <div className="w-[36px] h-[36px] shrink-0 relative">
   <Image
     src="/verita_logo_dark.png"
     alt="Logo"
@@ -13,6 +14,7 @@ export function HeroSection() {
     className="object-contain"
   />
 </div>
+
 
       </div>
 
@@ -30,17 +32,17 @@ export function HeroSection() {
           audit trail instantly. Stay compliant, stay protected.
         </p>
       </div>
-
-      <div className="mt-1 relative w-full h-[220px] sm:h-[300px] lg:h-[360px]">
+<div className="mt-1 mx-auto w-full max-w-[900px] h-[220px] sm:h-[300px] lg:h-[360px] relative">
   <Image
     src="/sign_in_1.webp"
     alt="Product Screenshots"
     fill
     priority
-    sizes="(max-width: 768px) 100vw, 900px"
+    sizes="900px"
     className="object-contain"
   />
 </div>
+
 
     </div>
   );
