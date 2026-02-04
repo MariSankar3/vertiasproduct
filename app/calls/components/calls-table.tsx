@@ -40,10 +40,13 @@ type SortKey =
   | "entryprice"
   | "targetprice"
   | "stoploss"
-  | "riskratio" 
+  | "riskratio"
   | "status"
+  | "validity"
   | null;
+
 type SortOrder = "asc" | "desc" | null;
+
 
 type CallsTableProps = {
   searchQuery?: string;
@@ -318,6 +321,15 @@ export function CallsTable({
           ? sharedA.localeCompare(sharedB)
           : sharedB.localeCompare(sharedA);
       }
+      if (sortKey === "validity") {
+  const validityA = a.validity?.toLowerCase() ?? "";
+  const validityB = b.validity?.toLowerCase() ?? "";
+
+  return sortOrder === "asc"
+    ? validityA.localeCompare(validityB)
+    : validityB.localeCompare(validityA);
+}
+
       return 0;
     });
   }, [filteredClients, sortKey, sortOrder]);
@@ -544,7 +556,7 @@ export function CallsTable({
                 <col className="w-[110px]  lg:table-column" />
                 <col className="w-[110px]  xl:table-column" />
                 <col className="w-[175px]" />
-                <col className="w-[85px]  md:table-column" />
+                <col className="w-[100px]  md:table-column" />
                 <col className="w-[90px]  lg:table-column" />
                 <col className="w-[80px]" />
                 <col className="w-[55px]" />
@@ -660,7 +672,7 @@ export function CallsTable({
                       setSortOrder(o);
                     }}
                   />
-                    {/* <SortableHeader
+                    <SortableHeader
                     label="Validity"
                     sKey="validity"
                     currentSortKey={sortKey}
@@ -669,10 +681,10 @@ export function CallsTable({
                       setSortKey(k);
                       setSortOrder(o);
                     }}
-                  /> */}
-                  <th className="text-left p-3 text-xs font-semibold text-[#667085] uppercase tracking-wider md:table-cell">
+                  />
+                  {/* <th className="text-left p-3 text-xs font-semibold text-[#667085] uppercase tracking-wider md:table-cell">
                     Validity
-                  </th>
+                  </th> */}
 
                   <th className="lg:table-cell p-0">
                     <SortableHeader
