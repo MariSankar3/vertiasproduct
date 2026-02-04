@@ -904,7 +904,7 @@ export function ClientsTable({
                 ease: "easeInOut",
                 duration: 0.6,
               }}
-              className="bg-white w-[23vw] max-h-screen rounded-2xl p-6 shadow-2xl h-full border-l"
+              className="bg-white w-[350px] max-h-screen rounded-2xl p-6 h-full border-l"
             >
               <div className="flex items-center justify-between mb-4">
                 <div>
